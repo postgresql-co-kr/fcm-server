@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %M:%L - %msg%n"/>
+    <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %M:%L - %msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -8,11 +8,10 @@
         </encoder>
     </appender>
 
-
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/fcm/fcm-server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/fcm/fcm-server-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/var/log/fcm/fcm-server-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>365</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -23,6 +22,7 @@
     <springProfile name="local">
         <logger name="com.ecobridge.fcm" level="DEBUG"/>
         <root level="INFO">
+            <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>

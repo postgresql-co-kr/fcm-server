@@ -5,6 +5,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +16,9 @@ import java.util.List;
 @Slf4j
 @Configuration
 public class FirebaseConfig {
-    private FcmPropsConfig fcmPropsConfig;
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+    private final FcmPropsConfig fcmPropsConfig;
 
     public FirebaseConfig(FcmPropsConfig fcmPropsConfig) {
         this.fcmPropsConfig = fcmPropsConfig;
@@ -24,7 +27,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         log.info("Fcm-server configuration init...");
-
+        log.info("Fcm-server active profile - {}", activeProfile);
         List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
         for (FcmApp fcmApp: fcmAppsList) {
             try(FileInputStream serviceAccount = new FileInputStream(fcmApp.getGoogleApplicationCredentials())) {

@@ -4,6 +4,7 @@ import com.ecobridge.fcm.server.enums.FcmDevice;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +13,11 @@ import java.util.Map;
 @Builder
 public class FcmMessage implements Serializable {
     /**
-     * 복수건 Token
+     * 복수건 Token 일때 필수
      */
     private List<String> tokens;
     /**
-     * 단건 Fcm Token
+     * 단건 Fcm Token 일때 필수
      */
     private String token;
     /**
@@ -27,7 +28,11 @@ public class FcmMessage implements Serializable {
     // ---------------------
     // Notification
     // ---------------------
+    @Nonnull
+    private String appName; // App name
+    @Nonnull
     private String title; //알림 제목
+    @Nonnull
     private String body; //알림 본문
     private String image; //알림 이미지 IOS
     private FcmDevice device; // APN 오류
