@@ -1,36 +1,56 @@
 server:
-  port: 30001
+  port: 3009s
 
 spring:
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
 ---
 spring:
   profile: local
-  pid.file: ./application.pid
+  pid.file: ./config/application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+#  -
+#    name: dragonballpc
+#    google-application-credentials: ./config/serviceAccountKey-dragonballpc.json
+#    connection-timeout: 3
+#    read-timeout: 5
 
 ---
 spring:
   profile: dev
-  pid.file: ./application.pid
+  pid.file: ./config/application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+
 
 ---
 spring:
   profile: prod
-  pid.file: ./application.pid
+  pid.file: ./config/application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+

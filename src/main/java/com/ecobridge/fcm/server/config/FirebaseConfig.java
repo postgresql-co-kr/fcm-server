@@ -34,10 +34,10 @@ public class FirebaseConfig {
                         .setReadTimeout(fcmApp.getReadTimeout())
                         .build();
                 FirebaseApp.initializeApp(options, fcmApp.getName());
+                log.info("fcm {} app init completed ", fcmApp.getName());
             } catch (IOException e) {
                 log.error("Failed to configure FCM server. Please check the json file location of Google credentials!");
             }
-            log.info("fcm {} app init completed ", fcmApp.getName());
         }
     }
 }
