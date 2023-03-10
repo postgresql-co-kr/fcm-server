@@ -1,5 +1,5 @@
 server:
-  port: 3009s
+  port: 3009
 
 spring:
   jackson.default-property-inclusion: non_null
