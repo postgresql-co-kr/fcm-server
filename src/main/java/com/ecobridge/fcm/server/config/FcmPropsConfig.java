@@ -1,14 +1,15 @@
 package com.ecobridge.fcm.server.config;
 
+import com.ecobridge.fcm.server.vo.FcmApp;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@ConfigurationProperties(prefix = "fcm")
+@ConfigurationProperties
 @Data
 public class FcmPropsConfig {
-    private String googleApplicationCredentials;
-    private int connectionTimeout = 3;
-    private int readTimeout = 5;
+    private List<FcmApp> fcmApps;
 }

@@ -10,27 +10,48 @@ spring:
   profile: local
   pid.file: ./application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+  -
+    name: dragonballpc
+    google-application-credentials: ./config/serviceAccountKey-dragonballpc.json
+    connection-timeout: 3
+    read-timeout: 5
 
 ---
 spring:
   profile: dev
   pid.file: ./application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+  -
+    name: dragonballpc
+    google-application-credentials: ./config/serviceAccountKey-dragonballpc.json
+    connection-timeout: 3
+    read-timeout: 5
 
 ---
 spring:
   profile: prod
   pid.file: ./application.pid
 
-fcm:
-  google-application-credentials: ./serviceAccountKey.json
-  connection-timeout: 3
-  read-timeout: 5
+fcm-apps:
+  -
+    name: ecobridge
+    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    connection-timeout: 3
+    read-timeout: 5
+  -
+    name: dragonballpc
+    google-application-credentials: ./config/serviceAccountKey-dragonballpc.json
+    connection-timeout: 3
+    read-timeout: 5
