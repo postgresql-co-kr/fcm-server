@@ -43,9 +43,9 @@ public class FcmApiService {
     /**
      * 동일한 메시지로 여러건을 보내는 경우
      * 최대 500개 token만 설정가능
-     *
-     * @param msg
-     * @return
+     * FcmMessage setTokens 설정
+     * @param msg 메시지
+     * @return 실패한 토큰 정보
      * @throws FirebaseMessagingException
      */
     public List<FailureToken> sendMulticast(FcmMessage msg) throws FirebaseMessagingException {
@@ -81,7 +81,7 @@ public class FcmApiService {
      * 개인화 메시지를 동시에 여러건 보내는 경우
      * 최대 500건 제한
      *
-     * @param msgs
+     * @param msgs 개별 메시지 리스트
      * @return
      * @throws FirebaseMessagingException
      */

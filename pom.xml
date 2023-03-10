@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ecobridge.fcm</groupId>
 	<artifactId>fcm-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>fcm-server</name>
 	<description>Fcm project for Spring Boot</description>
 	<properties>
@@ -28,6 +28,11 @@
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
 		</dependency>
 
 		<dependency>
