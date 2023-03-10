@@ -1,5 +1,5 @@
 package com.ecobridge.fcm.server.enums;
 
 public enum FcmDevice {
-    AOS, IOS
+    AOS, IOS, WEB
 }

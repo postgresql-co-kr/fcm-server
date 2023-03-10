@@ -26,7 +26,7 @@ public class FcmApiService {
      */
     public String sendMessage(FcmMessage msg) throws FirebaseMessagingException {
 
-        FcmBuilder fcmBuilder = getFcmBuilder(msg);
+        FcmBuilder fcmBuilder = createFcmBuilder(msg);
         Message message = Message.builder()
                 .setNotification(fcmBuilder.getNotificationBuilder().build())
                 .setAndroidConfig(fcmBuilder.getAosBuilder().build())
@@ -49,7 +49,7 @@ public class FcmApiService {
      * @throws FirebaseMessagingException
      */
     public List<FailureToken> sendMulticast(FcmMessage msg) throws FirebaseMessagingException {
-        FcmBuilder fcmBuilder = getFcmBuilder(msg);
+        FcmBuilder fcmBuilder = createFcmBuilder(msg);
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(fcmBuilder.getNotificationBuilder().build())
                 .setAndroidConfig(fcmBuilder.getAosBuilder().build())
@@ -90,7 +90,7 @@ public class FcmApiService {
         List<Message> messageList = new ArrayList<>();
 
         for (FcmMessage msg : msgs) {
-            FcmBuilder fcmBuilder = getFcmBuilder(msg);
+            FcmBuilder fcmBuilder = createFcmBuilder(msg);
             Message message = Message.builder()
                     .setNotification(fcmBuilder.getNotificationBuilder().build())
                     .setAndroidConfig(fcmBuilder.getAosBuilder().build())
@@ -141,7 +141,7 @@ public class FcmApiService {
      * @param msg Fcm Message
      * @return
      */
-    private FcmBuilder getFcmBuilder(FcmMessage msg) {
+    private FcmBuilder createFcmBuilder(FcmMessage msg) {
         // 공통
         Notification.Builder notificationBuilder = Notification.builder()
                 .setTitle(msg.getTitle())

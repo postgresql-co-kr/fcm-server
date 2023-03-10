@@ -27,13 +27,13 @@ public class FcmExceptionHandler {
 
     @ExceptionHandler(FcmBizException.class)
     protected ResponseEntity<FcmResponse> handleFcmBizException(FcmBizException e) {
-        log.error("Fcm Exception:", e);
+        log.error("Fcm FcmBizException:", e);
         return new ResponseEntity<>(
                 FcmResponse.builder()
                         .isSuccessful(false)
                         .errorCode(e.getErrorCode())
                         .message(e.getMessage())
-                        .build(), HttpStatus.OK
+                        .build(), HttpStatus.BAD_REQUEST
         );
     }
 
@@ -45,7 +45,7 @@ public class FcmExceptionHandler {
                         .isSuccessful(false)
                         .errorCode(e.getErrorCode().toString())
                         .message(e.getMessage())
-                        .build(), HttpStatus.OK
+                        .build(), HttpStatus.BAD_REQUEST
         );
     }
 
