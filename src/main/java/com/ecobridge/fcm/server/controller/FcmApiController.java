@@ -15,5 +15,9 @@ public class FcmApiController {
         this.service = service;
     }
 
+    @RequestMapping("/hello")
+    public String hello() {
+        return "hello fcm";
+    }
 
 }

@@ -2,25 +2,35 @@ server:
   port: 13009
 
 spring:
+  profiles:
+    default: "local"
   jackson.default-property-inclusion: non_null
-  devtools.livereload.enable: true
-
+  #devtools.livereload.enable: true
 
 management:
+  server:
+    port: 13119
   endpoints:
-    web:
+    jmx:
       exposure:
-        include: prometheus
+        exclude: "*"
+    web:
+      base-path: "/fcm/actuator"
+      exposure:
+        include: "health,prometheus"
 
 ---
 spring:
-  profile: local
-  pid.file: ./config/application.pid
+  config:
+    activate:
+      on-profile:
+        - "local"
+  pid.file: "./config/application.pid"
 
 fcm-apps:
   -
-    name: ecobridge
-    google-application-credentials: ./config/serviceAccountKey-ecobridge.json
+    name: "ecobridge"
+    google-application-credentials: "./config/serviceAccountKey-ecobridge.json"
     connection-timeout: 3
     read-timeout: 5
 #  -
@@ -31,8 +41,12 @@ fcm-apps:
 
 ---
 spring:
-  profile: dev
-  pid.file: ./config/application.pid
+  config:
+    activate:
+      on-profile:
+        - dev
+  pid.file: "./config/application.pid"
+
 
 fcm-apps:
   -
@@ -44,8 +58,12 @@ fcm-apps:
 
 ---
 spring:
-  profile: prod
-  pid.file: ./config/application.pid
+  config:
+    activate:
+      on-profile:
+        - prod
+  pid.file: "./config/application.pid"
+
 
 fcm-apps:
   -
