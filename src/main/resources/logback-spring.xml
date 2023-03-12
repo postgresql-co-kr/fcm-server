@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %M:%L - %msg%n"/>
+    <property name="ERROR_TOKEN_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -18,6 +19,21 @@
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
+
+    <appender name="ERROR_TOKEN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/fcm/fcm-error-token.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/fcm/fcm-error-token-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${ERROR_TOKEN_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="fcmErrorToken" level="INFO">
+        <appender-ref ref="ERROR_TOKEN"/>
+    </logger>
 
     <springProfile name="local">
         <logger name="com.ecobridge.fcm" level="DEBUG"/>
@@ -41,6 +57,5 @@
             <appender-ref ref="FILE"/>
         </root>
     </springProfile>
-
-
+    
 </configuration>

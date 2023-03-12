@@ -5,6 +5,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,6 +30,8 @@ public class FirebaseConfig {
     public void init() {
         log.info("Fcm-server configuration init...");
         log.info("Fcm-server active profile - {}", activeProfile);
+
+
         List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
         for (FcmApp fcmApp: fcmAppsList) {
             try(FileInputStream serviceAccount = new FileInputStream(fcmApp.getGoogleApplicationCredentials())) {

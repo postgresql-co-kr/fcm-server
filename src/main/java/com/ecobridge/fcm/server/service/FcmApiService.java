@@ -5,17 +5,22 @@ import com.ecobridge.fcm.server.vo.FcmBuilder;
 import com.ecobridge.fcm.server.vo.FcmMessage;
 import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class FcmApiService {
+    private final static Logger fcmErrorTokenLog = LoggerFactory.getLogger("fcmErrorToken");
     private final int MAX_SEND_MESSAGES = 500; // send all 최대 500건 제한 구글 정책
     private final int MAX_MESSAGE_SIZE = 4 * 1024; // 4k 단건 , topic 2k 제한
+
 
     /**
      * 단건 메세지 전송
@@ -24,7 +29,7 @@ public class FcmApiService {
      * @return messageId
      * @throws FirebaseMessagingException
      */
-    public String sendMessage(FcmMessage msg) throws FirebaseMessagingException {
+    public String sendMessage(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
 
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
         Message message = Message.builder()
@@ -36,8 +41,11 @@ public class FcmApiService {
                 .setToken(msg.getToken())
                 .build();
 
-        return FirebaseMessaging.getInstance().send(message); // messageId
-
+        String messageId = FirebaseMessaging.getInstance().send(message);
+        if (messageId == null) { // 전송실패
+            fcmErrorTokenLog.info("{},{},{}", msg.getToken(), "MESSAGE_ID_NULL", "SEND MESSAGE ERROR"); // 에러토큰만 별도 관리
+        }
+        return messageId;
     }
 
     /**
@@ -48,7 +56,7 @@ public class FcmApiService {
      * @return 실패한 토큰 정보
      * @throws FirebaseMessagingException
      */
-    public List<FailureToken> sendMulticast(FcmMessage msg) throws FirebaseMessagingException {
+    public List<FailureToken> sendMulticast(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(fcmBuilder.getNotificationBuilder().build())
@@ -85,7 +93,7 @@ public class FcmApiService {
      * @return
      * @throws FirebaseMessagingException
      */
-    public List<FailureToken> sendAll(List<FcmMessage> msgs) throws FirebaseMessagingException {
+    public List<FailureToken> sendAll(@Nonnull List<FcmMessage> msgs) throws FirebaseMessagingException {
 
         List<Message> messageList = new ArrayList<>();
 
@@ -128,6 +136,7 @@ public class FcmApiService {
             message = exception.getMessage();
         }
         log.info("Failure Message: [ErrorCode]:{}\n\t\t[ErrorMessage]:{}\n\t\t[Token]:{}", errorCode, message, token);
+        fcmErrorTokenLog.info("{},{},{}", token, errorCode, message); // 에러토큰만 별도 관리
         return FailureToken.builder()
                 .token(token)
                 .errorCode(errorCode)
