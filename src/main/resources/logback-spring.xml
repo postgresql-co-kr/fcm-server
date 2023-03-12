@@ -20,6 +20,7 @@
         </encoder>
     </appender>
 
+    <!-- fcm error tokens log file -->
     <appender name="ERROR_TOKEN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/fcm/fcm-error-token.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -30,10 +31,10 @@
             <pattern>${ERROR_TOKEN_PATTERN}</pattern>
         </encoder>
     </appender>
-
     <logger name="fcmErrorToken" level="INFO">
         <appender-ref ref="ERROR_TOKEN"/>
     </logger>
+
 
     <springProfile name="local">
         <logger name="com.ecobridge.fcm" level="DEBUG"/>
