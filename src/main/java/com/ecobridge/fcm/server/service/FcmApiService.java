@@ -1,5 +1,7 @@
 package com.ecobridge.fcm.server.service;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.FileAppender;
 import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmBuilder;
 import com.ecobridge.fcm.server.vo.FcmMessage;
@@ -14,6 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,6 +143,29 @@ public class FcmApiService {
         }
 
         return failureTokenList;
+    }
+
+    @Nonnull
+    public String getCsvLogFailTokens(String date) throws IOException {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        FileAppender<?> fileAppender = (FileAppender<?>) loggerContext.getLogger("fcmErrorToken").getAppender("ERROR_TOKEN_CSV");
+        String filePath = fileAppender.getFile();
+        LocalDate nowLd = LocalDate.now();
+        String nowYmd = nowLd.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        if (nowYmd.compareTo(date) > 0) {
+            filePath = filePath.replaceAll("\\.log", "")
+                    .concat(nowLd.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .concat(".log");
+        }
+        log.info("Failed token log file path: {}", filePath);
+
+        Path path = Path.of(filePath);
+        if (Files.exists(path)) {
+            return String.join(System.lineSeparator(), Files.readAllLines(path));
+        }
+
+        return "";
+
     }
 
     private FailureToken makeFailureToken(String token, FirebaseMessagingException exception) {

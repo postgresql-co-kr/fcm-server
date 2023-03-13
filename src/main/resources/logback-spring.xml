@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="LOG_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %M:%L - %msg%n"/>
-    <property name="ERROR_TOKEN_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS} %msg%n"/>
+    <property name="ERROR_TOKEN_CSV_PATTERN" value="%d{yy-MM-dd HH:mm:ss.SSS},%msg%n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -14,6 +14,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/var/log/fcm/fcm-server-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>365</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
@@ -21,18 +22,20 @@
     </appender>
 
     <!-- fcm error tokens log file -->
-    <appender name="ERROR_TOKEN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ERROR_TOKEN_CSV" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/fcm/fcm-error-token.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/var/log/fcm/fcm-error-token-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>365</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+            <zipArchive>false</zipArchive> <!-- 압축 사용 안 함 -->
         </rollingPolicy>
         <encoder>
-            <pattern>${ERROR_TOKEN_PATTERN}</pattern>
+            <pattern>${ERROR_TOKEN_CSV_PATTERN}</pattern>
         </encoder>
     </appender>
     <logger name="fcmErrorToken" level="INFO">
-        <appender-ref ref="ERROR_TOKEN"/>
+        <appender-ref ref="ERROR_TOKEN_CSVs"/>
     </logger>
 
 
