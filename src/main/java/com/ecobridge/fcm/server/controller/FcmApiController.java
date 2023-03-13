@@ -10,6 +10,7 @@ import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -77,11 +78,13 @@ public class FcmApiController {
         List<String> lineList = Arrays.stream(csvString.split(System.lineSeparator())).toList();
         List<Map<String, String>> result = new ArrayList<>();
         for (String line : lineList) {
-            Map<String, String> map = new HashMap<>();
-            String[] data = line.split(",");
-            map.put("datetime", data[0]);
-            map.put("token", data[1]);
-            result.add(map);
+            if (StringUtils.hasLength(line)) {
+                Map<String, String> map = new HashMap<>();
+                String[] data = line.split(",");
+                map.put("datetime", data[0]);
+                map.put("token", data[1]);
+                result.add(map);
+            }
         }
         return objectMapper.writeValueAsString(result);
     }
