@@ -5,7 +5,7 @@ spring:
   profiles:
     default: "local"
   jackson.default-property-inclusion: non_null
-  #devtools.livereload.enable: true
+  devtools.livereload.enable: true
 
 management:
   server:

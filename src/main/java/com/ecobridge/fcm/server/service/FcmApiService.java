@@ -35,42 +35,12 @@ public class FcmApiService {
 
     @Autowired
     public FcmApiService(MeterRegistry meterRegistry) {
-
-        this.failMutilCastCounter = Counter.builder("fcm.counter")
-                .description("fcm multicast fail counter")
-                .tag("type", "fail")
-                .tag("id", "multicast")
-                .register(meterRegistry);
-
-        this.failSendAllCastCounter = Counter.builder("fcm.counter")
-                .description("fcm send all fail counter")
-                .tag("type", "fail")
-                .tag("id", "sendall")
-                .register(meterRegistry);
-
-        this.failMessageCounter = Counter.builder("fcm.counter")
-                .description("fcm message fail counter")
-                .tag("type", "fail")
-                .tag("id", "message")
-                .register(meterRegistry);
-
-        this.successMutilCastCounter = Counter.builder("fcm.counter")
-                .description("fcm multicast success counter")
-                .tag("type", "success")
-                .tag("id", "multicast")
-                .register(meterRegistry);
-
-        this.successSendAllCastCounter = Counter.builder("fcm.counter")
-                .description("fcm send all success counter")
-                .tag("type", "success")
-                .tag("id", "senall")
-                .register(meterRegistry);
-
-        this.successMessageCounter = Counter.builder("fcm.counter")
-                .description("fcm message success counter")
-                .tag("type", "success")
-                .tag("id", "message")
-                .register(meterRegistry);
+        this.failMutilCastCounter = Counter.builder("fcm.send.counter").description("The send count of fail/success by fcm method").tag("type", "fail").tag("id", "multicast").register(meterRegistry);
+        this.failSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "sendall").register(meterRegistry);
+        this.failMessageCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "message").register(meterRegistry);
+        this.successMutilCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "multicast").register(meterRegistry);
+        this.successSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "senall").register(meterRegistry);
+        this.successMessageCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "message").register(meterRegistry);
     }
 
     /**
@@ -83,14 +53,7 @@ public class FcmApiService {
     public String sendMessage(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
 
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
-        Message message = Message.builder()
-                .setNotification(fcmBuilder.getNotificationBuilder().build())
-                .setAndroidConfig(fcmBuilder.getAosBuilder().build())
-                .setApnsConfig(fcmBuilder.getIosBuilder().build())
-                .setWebpushConfig(fcmBuilder.getWebBuilder().build())
-                .putAllData(msg.getData())
-                .setToken(msg.getToken())
-                .build();
+        Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).setToken(msg.getToken()).build();
 
         String messageId = FirebaseMessaging.getInstance().send(message);
         if (messageId == null) { // 전송실패
@@ -105,20 +68,14 @@ public class FcmApiService {
      * 동일한 메시지로 여러건을 보내는 경우
      * 최대 500개 token만 설정가능
      * FcmMessage setTokens 설정
+     *
      * @param msg 메시지
      * @return 실패한 토큰 정보
      * @throws FirebaseMessagingException
      */
     public List<FailureToken> sendMulticast(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
-        MulticastMessage message = MulticastMessage.builder()
-                .setNotification(fcmBuilder.getNotificationBuilder().build())
-                .setAndroidConfig(fcmBuilder.getAosBuilder().build())
-                .setApnsConfig(fcmBuilder.getIosBuilder().build())
-                .setWebpushConfig(fcmBuilder.getWebBuilder().build())
-                .putAllData(msg.getData())
-                .addAllTokens(msg.getTokens())
-                .build();
+        MulticastMessage message = MulticastMessage.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).addAllTokens(msg.getTokens()).build();
 
         List<FailureToken> failureTokenList = new ArrayList<>();
         BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
@@ -156,14 +113,7 @@ public class FcmApiService {
 
         for (FcmMessage msg : msgs) {
             FcmBuilder fcmBuilder = createFcmBuilder(msg);
-            Message message = Message.builder()
-                    .setNotification(fcmBuilder.getNotificationBuilder().build())
-                    .setAndroidConfig(fcmBuilder.getAosBuilder().build())
-                    .setApnsConfig(fcmBuilder.getIosBuilder().build())
-                    .setWebpushConfig(fcmBuilder.getWebBuilder().build())
-                    .putAllData(msg.getData())
-                    .setToken(msg.getToken())
-                    .build();
+            Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).setToken(msg.getToken()).build();
             messageList.add(message);
         }
 
@@ -197,11 +147,7 @@ public class FcmApiService {
         }
         log.info("Failure Message: [ErrorCode]:{}\n\t\t[ErrorMessage]:{}\n\t\t[Token]:{}", errorCode, message, token);
         fcmErrorTokenLog.info("{},{},{}", token, errorCode, message); // 에러토큰만 별도 관리
-        return FailureToken.builder()
-                .token(token)
-                .errorCode(errorCode)
-                .message(message)
-                .build();
+        return FailureToken.builder().token(token).errorCode(errorCode).message(message).build();
     }
 
     /**
@@ -212,46 +158,26 @@ public class FcmApiService {
      */
     private FcmBuilder createFcmBuilder(FcmMessage msg) {
         // 공통
-        Notification.Builder notificationBuilder = Notification.builder()
-                .setTitle(msg.getTitle())
-                .setBody(msg.getBody());
+        Notification.Builder notificationBuilder = Notification.builder().setTitle(msg.getTitle()).setBody(msg.getBody());
 
         // AOS
-        AndroidConfig.Builder aosBuilder = AndroidConfig.builder()
-                .setPriority(AndroidConfig.Priority.HIGH);
+        AndroidConfig.Builder aosBuilder = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH);
 
         // APN
-        ApnsConfig.Builder iosBuilder = ApnsConfig.builder()
-                .setAps(
-                        Aps.builder()
-                                .setContentAvailable(true) //IOS 푸시 뱃지 카운트
-                                .setMutableContent(true) // 이미지표시
-                                .build()
-                );
+        ApnsConfig.Builder iosBuilder = ApnsConfig.builder().setAps(Aps.builder().setContentAvailable(true) //IOS 푸시 뱃지 카운트
+                .setMutableContent(true) // 이미지표시
+                .build());
         // Web
         WebpushConfig.Builder webBuilder = WebpushConfig.builder();
 
         // 이미지 설정
         if (StringUtils.hasLength(msg.getImage())) {
-            aosBuilder.setNotification(
-                    AndroidNotification.builder()
-                            .setImage(msg.getImage()).build()
-            );
-            iosBuilder.setFcmOptions(
-                    ApnsFcmOptions.builder()
-                            .setImage(msg.getImage()).build()
-            );
-            webBuilder.setNotification(
-                    WebpushNotification.builder()
-                            .setImage(msg.getImage()).build()
-            );
+            aosBuilder.setNotification(AndroidNotification.builder().setImage(msg.getImage()).build());
+            iosBuilder.setFcmOptions(ApnsFcmOptions.builder().setImage(msg.getImage()).build());
+            webBuilder.setNotification(WebpushNotification.builder().setImage(msg.getImage()).build());
         }
 
-        return FcmBuilder.builder()
-                .notificationBuilder(notificationBuilder)
-                .aosBuilder(aosBuilder)
-                .iosBuilder(iosBuilder)
-                .webBuilder(webBuilder).build();
+        return FcmBuilder.builder().notificationBuilder(notificationBuilder).aosBuilder(aosBuilder).iosBuilder(iosBuilder).webBuilder(webBuilder).build();
 
     }
 
