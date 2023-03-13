@@ -11,8 +11,11 @@ import java.util.List;
 public class FcmResponse implements Serializable {
     @Builder.Default
     private boolean isSuccessful = false;
-    private String messageId;
-    private String errorCode;
-    private String message;
+    @Builder.Default
+    private String messageId = "";
+    @Builder.Default
+    private String errorCode = "";
+    @Builder.Default
+    private String message = "";
     private List<FailureToken> failureTokens;
 }
