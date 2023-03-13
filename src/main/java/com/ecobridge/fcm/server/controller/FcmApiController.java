@@ -67,7 +67,7 @@ public class FcmApiController {
         String result = service.getCsvLogFailTokens(date);
         if (!isCsvRequest(request)) {
             //Json 형식으로 반환하는 로직
-            result = csvToJson(result);
+            return csvToJson(result);
         }
         return result;
     }
