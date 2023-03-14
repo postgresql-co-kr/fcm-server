@@ -150,11 +150,13 @@ public class FcmApiService {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         FileAppender<?> fileAppender = (FileAppender<?>) loggerContext.getLogger("fcmErrorToken").getAppender("ERROR_TOKEN_CSV");
         String filePath = fileAppender.getFile();
-        LocalDate nowLd = LocalDate.now();
-        String nowYmd = nowLd.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String nowYmd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        LocalDate ldDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
+
         if (nowYmd.compareTo(date) > 0) {
             filePath = filePath.replaceAll("\\.log", "")
-                    .concat(nowLd.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .concat("-")
+                    .concat(ldDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .concat(".log");
         }
         log.info("Failed token log file path: {}", filePath);

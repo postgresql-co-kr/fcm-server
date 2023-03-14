@@ -31,7 +31,6 @@ public class FirebaseConfig {
         log.info("Fcm-server configuration init...");
         log.info("Fcm-server active profile - {}", activeProfile);
 
-
         List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
         for (FcmApp fcmApp: fcmAppsList) {
             try(FileInputStream serviceAccount = new FileInputStream(fcmApp.getGoogleApplicationCredentials())) {
