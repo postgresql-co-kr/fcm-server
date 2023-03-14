@@ -1,6 +1,6 @@
 # project config files(ex key)
 config/
-
+volumes/
 
 # Compiled class files
 *.class

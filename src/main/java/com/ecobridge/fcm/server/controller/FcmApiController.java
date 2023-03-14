@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -89,5 +91,31 @@ public class FcmApiController {
     private boolean isCsvRequest(HttpServletRequest request) {
         String acceptHeader = request.getHeader("Accept");
         return acceptHeader != null && acceptHeader.contains("text/csv");
+    }
+
+    private void test() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "Hello, ";
+        });
+
+        CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "World!";
+        });
+
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(future1);
+
+        allFutures.get();
+
+        System.out.println(future1.get() + future2.get());
     }
 }

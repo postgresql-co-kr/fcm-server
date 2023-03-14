@@ -163,9 +163,7 @@ public class FcmApiService {
         if (Files.exists(path)) {
             return String.join(System.lineSeparator(), Files.readAllLines(path));
         }
-
         return "";
-
     }
 
     private FailureToken makeFailureToken(String token, FirebaseMessagingException exception) {
