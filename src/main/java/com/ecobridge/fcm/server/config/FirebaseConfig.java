@@ -7,8 +7,10 @@ import com.google.firebase.FirebaseOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
@@ -18,8 +20,10 @@ import java.util.List;
 @Slf4j
 @Configuration
 public class FirebaseConfig {
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
+
+    @Autowired
+    private Environment env;
+
     private final FcmPropsConfig fcmPropsConfig;
 
     public FirebaseConfig(FcmPropsConfig fcmPropsConfig) {
@@ -29,7 +33,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         log.info("Fcm-server configuration init...");
-        log.info("Fcm-server active profile - {}", activeProfile);
+        log.info("Fcm-server active profile - {}", env.getActiveProfiles());
 
         List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
         for (FcmApp fcmApp: fcmAppsList) {

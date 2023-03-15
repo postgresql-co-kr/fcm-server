@@ -3,6 +3,7 @@ package com.ecobridge.fcm.server.vo;
 import com.ecobridge.fcm.server.enums.FcmDevice;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.NonNull;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -28,11 +29,11 @@ public class FcmMessage implements Serializable {
     // ---------------------
     // Notification
     // ---------------------
-    @Nonnull
+    @NonNull
     private String appName; // App name
-    @Nonnull
+    @NonNull
     private String title; //알림 제목
-    @Nonnull
+    @NonNull
     private String body; //알림 본문
     private String image; //알림 이미지 IOS
     private FcmDevice device; // APN 오류
