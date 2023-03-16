@@ -17,7 +17,7 @@ management:
     web:
       base-path: "/fcm/actuator"
       exposure:
-        include: "health,prometheus"
+        include: "health,metrics,prometheus"
 
 jasypt.encryptor.env.name: JASYPT_ENCRYPTOR_PASSWORD
 
@@ -52,21 +52,17 @@ spring:
         format_sql: true
         use_sql_comments: true
 
-db:
-  send:
-    scrap:
-      minus:
-        seconds: 5
-
 fcm-apps:
   -
-    name: "ecobridge"
-    google-application-credentials: "./keys/serviceAccountKey-ecobridge.json"
+    name: ecobridge
+    google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 3
     read-timeout: 5
+    db-push: true  # true: db fcm send
+    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
 #  -
-#    name: dragonballpc
-#    google-application-credentials: ./keys/serviceAccountKey-dragonballpc.json
+#    name: postgresql
+#    google-application-credentials: ./keys/serviceAccountKey-postgresql.json
 #    connection-timeout: 3
 #    read-timeout: 5
 
@@ -104,12 +100,9 @@ fcm-apps:
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 3
     read-timeout: 5
+    db-push: false  # true: db insert fcm send
+    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
 
-db:
-  send:
-    scrap:
-      minus:
-        seconds: 5
 ---
 spring:
   config:
@@ -144,9 +137,5 @@ fcm-apps:
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 3
     read-timeout: 5
-
-db:
-  send:
-    scrap:
-      minus:
-        seconds: 5
+    db-push: false  # true: db insert fcm send
+    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)

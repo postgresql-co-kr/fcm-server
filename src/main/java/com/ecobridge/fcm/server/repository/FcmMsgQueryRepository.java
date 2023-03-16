@@ -17,7 +17,7 @@ public class FcmMsgQueryRepository  {
 
     @PersistenceContext
     EntityManager entityManager;
-    public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapTime) {
+    public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapeTime) {
         String sql = """
                 SELECT 
                      m
@@ -25,16 +25,16 @@ public class FcmMsgQueryRepository  {
                     fcmMsg m
                 WHERE
                     m.appName = :appName
-                    AND m.createdTime >= :scrapTime
-                    AND m.sendYn = 'N'
+                    AND m.createdAt >= :scrapeTime
+                    AND m.pushYn = 'N'
                 ORDER BY
-                    m.createdTime desc
+                    m.createdAt desc
                 LIMIT 500             
                     """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(
                 sql, FcmMsgEntity.class);
         query.setParameter("appName", appName);
-        query.setParameter("scrapTime", scrapTime);
+        query.setParameter("scrapeTime", scrapeTime);
         query.setHint("jakarta.persistence.lock.timeout", 5000);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
         return query.getResultList();
@@ -59,7 +59,7 @@ public class FcmMsgQueryRepository  {
                 )
                 AND m.sendYn = 'N'
             ORDER BY
-                m.createdTime desc
+                m.createdAt desc
             LIMIT 500
                 """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(

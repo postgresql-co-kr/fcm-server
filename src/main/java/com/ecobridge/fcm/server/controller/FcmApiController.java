@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @RestController
 @RequestMapping("/fcm")
+@Timed
 public class FcmApiController {
     private final FcmApiService service;
 
@@ -28,6 +29,11 @@ public class FcmApiController {
         this.service = service;
     }
 
+    @GetMapping("/hello")
+    @Timed(value = "fcm.hello.time", description = "hello response time")
+    public String hello() throws FirebaseMessagingException {
+        return "Hello fcm-server";
+    }
 
     @PostMapping("/send/multicast")
     @Timed(value = "fcm.send.multicast.time", description = "multicast response time")

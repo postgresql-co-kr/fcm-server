@@ -42,7 +42,7 @@ public class JpaTest {
 //        List<FcmMsgEntity> list = fcmMsgQueryRepository.findTargetList("ecobridgeapp",
 //                Timestamp.valueOf(LocalDateTime.now().minusSeconds(60)));
 
-        fcmDbService.findTargetList("ecobridgeapp");
+        fcmDbService.sendFcmFromDb("ecobridge");
 
 //        List<FcmMsgEntity> list2 = fcmMsgQueryRepository.findNextList("ecobridgeapp",
 //                list.get(list.size()-6).getMsgKey());

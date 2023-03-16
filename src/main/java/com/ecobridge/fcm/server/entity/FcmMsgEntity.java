@@ -10,17 +10,18 @@ import java.sql.Timestamp;
 @Data
 public class FcmMsgEntity {
     /**
-    msg_key VARCHAR(255) NOT NULL PRIMARY KEY,
-    msg_seq SERIAL,
-    app_name VARCHAR(50) NOT NULL,
-    fcm_token  VARCHAR(255) NOT NULL,
-    title  VARCHAR(250) NOT NULL,
-    body  VARCHAR(4000) NOT NULL,
-    image VARCHAR(2048) NULL,
-    send_yn VARCHAR(1) DEFAULT 'N' NOT NULL,
-    send_time TIMESTAMP NULL,
-    success_yn VARCHAR(1) DEFAULT 'N' NOT NULL,
-    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+     msg_key VARCHAR(255) NOT NULL,
+     msg_seq bigserial,
+     app_name VARCHAR(50) NOT NULL,
+     device_type VARCHAR(50) NULL,
+     fcm_token VARCHAR(255) NOT NULL,
+     title  VARCHAR(250) NOT NULL,
+     body  VARCHAR(4000) NOT NULL,
+     image VARCHAR(2048) NULL,
+     push_yn  VARCHAR(1) DEFAULT 'N' NOT NULL,
+     push_time  TIMESTAMP NULL,
+     success_yn VARCHAR(1) DEFAULT 'N' NOT NULL,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     */
 
     @Id
@@ -34,6 +35,9 @@ public class FcmMsgEntity {
     @Column(name = "app_name", nullable = false, length = 50)
     private String appName;
 
+    @Column(name = "device_type", nullable = true, length = 50)
+    private String deviceType;
+
     @Column(name = "fcm_token", nullable = false, length = 255)
     private String fcmToken;
 
@@ -46,15 +50,15 @@ public class FcmMsgEntity {
     @Column(name = "image", nullable = true, length = 2048)
     private String image;
 
-    @Column(name = "send_yn", nullable = false, length = 1)
-    private String sendYn = "N";
+    @Column(name = "push_yn", nullable = false, length = 1)
+    private String pushYn = "N";
 
-    @Column(name = "send_time", nullable = true)
-    private Timestamp sendTime;
+    @Column(name = "push_time", nullable = true)
+    private Timestamp pushTime;
 
     @Column(name = "success_yn", nullable = false, length = 1)
     private String successYn = "N";
 
-    @Column(name = "created_time", nullable = false)
-    private Timestamp createdTime;
+    @Column(name = "created_at", nullable = false)
+    private Timestamp createdAt;
 }

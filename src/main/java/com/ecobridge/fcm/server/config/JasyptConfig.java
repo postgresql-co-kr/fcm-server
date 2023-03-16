@@ -21,7 +21,7 @@ public class JasyptConfig {
         String jasyptEnvName = env.getProperty("jasypt.encryptor.env.name", "JASYPT_ENCRYPTOR_PASSWORD");
         String jasyptPassword = env.getProperty(jasyptEnvName);
         if (jasyptPassword == null) {
-            throw new IllegalStateException(jasyptEnvName + " environment variable not found");
+            throw new IllegalStateException(jasyptEnvName + " system environment variable not found");
         }
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();

@@ -1,7 +1,10 @@
 package com.ecobridge.fcm.server.service;
 
+import com.ecobridge.fcm.server.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
+import com.ecobridge.fcm.server.utils.IntervalParser;
+import com.ecobridge.fcm.server.vo.FcmApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -15,17 +18,24 @@ import java.util.List;
 public class FcmDbService {
     private final FcmMsgQueryRepository fcmMsgQueryRepository;
 
-    @Autowired
-    private Environment env;
+    private final FcmPropsConfig fcmPropsConfig;
 
-    public FcmDbService(FcmMsgQueryRepository fcmMsgQueryRepository) {
+
+    public FcmDbService(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig) {
         this.fcmMsgQueryRepository = fcmMsgQueryRepository;
+        this.fcmPropsConfig = fcmPropsConfig;
     }
 
     @Transactional
-    public List<FcmMsgEntity> findTargetList(String appName) {
-        Timestamp scrapTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(env.getProperty("db.send.scrap.minus.seconds", Integer.class, 5)));
-        return fcmMsgQueryRepository.findTargetList(appName, scrapTime);
+    public void sendFcmFromDb(String appName) {
+        List<FcmApp> fcmApps = fcmPropsConfig.getFcmApps();
+        FcmApp fcmApp = fcmApps.stream().filter(vo -> vo.getName().equalsIgnoreCase(appName)).findFirst().orElse(null);
+        if (fcmApp == null || !fcmApp.isDbPush()) {
+            return;
+        }
+        long minusSeconds = IntervalParser.parse(fcmApp.getDbMinusTime());
+        Timestamp scrapTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(minusSeconds));
+        List<FcmMsgEntity> targetList = fcmMsgQueryRepository.findTargetList(appName, scrapTime);
     }
 
 }
