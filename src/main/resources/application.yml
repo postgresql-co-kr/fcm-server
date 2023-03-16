@@ -26,8 +26,8 @@ spring:
   config:
     activate:
       on-profile:
-        - "local"
-  pid.file: "./application.pid"
+        - local
+  pid.file: ./application.pid
   h2:
     console:
       enabled: true
@@ -37,6 +37,10 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 2
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     properties:
@@ -45,7 +49,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 
 fcm-apps:
@@ -75,6 +79,7 @@ spring:
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 10
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -106,6 +111,7 @@ spring:
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 20
+
   jpa:
     hibernate:
       ddl-auto: none

@@ -2,6 +2,8 @@ package com.ecobridge.fcm.server.service;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.FileAppender;
+import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
+import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmBuilder;
 import com.ecobridge.fcm.server.vo.FcmMessage;
@@ -39,6 +41,12 @@ public class FcmApiService {
     private final Counter successMutilCastCounter;
     private final Counter successSendAllCastCounter;
     private final Counter successMessageCounter;
+
+    @Autowired
+    private FcmMsgEntityRepository fcmMsgEntityRepository;
+
+    @Autowired
+    private FcmMsgQueryRepository fcmMsgQueryRepository;
 
     @Autowired
     public FcmApiService(MeterRegistry meterRegistry) {
@@ -144,6 +152,8 @@ public class FcmApiService {
 
         return failureTokenList;
     }
+
+
 
     @Nonnull
     public String getCsvLogFailTokens(String date) throws IOException {
