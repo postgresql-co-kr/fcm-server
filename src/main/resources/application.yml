@@ -43,14 +43,20 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-        show_sql: true
         format_sql: true
-    hibernate:
-      ddl-auto: none
+        use_sql_comments: true
 
+db:
+  send:
+    scrap:
+      minus:
+        seconds: 5
 
 fcm-apps:
   -
@@ -81,12 +87,16 @@ spring:
       maximum-pool-size: 10
 
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-      show-sql: true
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
 
 fcm-apps:
   -
@@ -95,7 +105,11 @@ fcm-apps:
     connection-timeout: 3
     read-timeout: 5
 
-
+db:
+  send:
+    scrap:
+      minus:
+        seconds: 5
 ---
 spring:
   config:
@@ -113,12 +127,16 @@ spring:
       maximum-pool-size: 20
 
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-      show-sql: false
+        format_sql: false
+        show_sql: false
+        use_sql_comments: false
 
 fcm-apps:
   -
@@ -127,3 +145,8 @@ fcm-apps:
     connection-timeout: 3
     read-timeout: 5
 
+db:
+  send:
+    scrap:
+      minus:
+        seconds: 5

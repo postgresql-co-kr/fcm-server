@@ -16,6 +16,18 @@ CREATE TABLE IF NOT EXISTS fcm_msg (
 CREATE INDEX fcm_msg_ix_01 ON fcm_msg(msg_seq, app_name, send_yn);
 CREATE INDEX fcm_msg_ix_02 ON fcm_msg(created_time desc);
 
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fassafa1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fadssadfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('asdfads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdasfdasads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdsfeddads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfaee', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('adsfas3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fads3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afda3dsff', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+
 /* postgresql
 CREATE TABLE IF NOT EXISTS fcm_msg (
   msg_key VARCHAR(255) NOT NULL PRIMARY KEY,

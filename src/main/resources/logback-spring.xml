@@ -41,10 +41,10 @@
 
     <springProfile name="local">
         <logger name="com.ecobridge.fcm" level="DEBUG"/>
-        <logger name="logging.level.org.hibernate.SQL" level="DEBUG"/>
-        <logger name="logging.level.org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
-        <logger name="logging.level.org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
-        <logger name="logging.level.org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+        <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
+        <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>
         <root level="INFO">
             <appender-ref ref="FILE"/>
             <appender-ref ref="CONSOLE"/>
@@ -54,10 +54,10 @@
 
     <springProfile name="dev">
         <logger name="com.ecobridge.fcm" level="DEBUG"/>
-        <logger name="logging.level.org.hibernate.SQL" level="DEBUG"/>
-        <logger name="logging.level.org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
-        <logger name="logging.level.org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
-        <logger name="logging.level.org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+        <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG"/>
+        <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
