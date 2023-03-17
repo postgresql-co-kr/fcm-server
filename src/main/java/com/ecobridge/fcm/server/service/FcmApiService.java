@@ -2,6 +2,7 @@ package com.ecobridge.fcm.server.service;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.FileAppender;
+import com.ecobridge.fcm.server.exception.InvalidRequestException;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.vo.FailureToken;
@@ -35,9 +36,7 @@ public class FcmApiService {
 
     private final Counter failMutilCastCounter;
     private final Counter failSendAllCastCounter;
-
     private final Counter failMessageCounter;
-
     private final Counter successMutilCastCounter;
     private final Counter successSendAllCastCounter;
     private final Counter successMessageCounter;
@@ -50,12 +49,19 @@ public class FcmApiService {
 
     @Autowired
     public FcmApiService(MeterRegistry meterRegistry) {
-        this.failMutilCastCounter = Counter.builder("fcm.send.counter").description("The send count of fail/success by fcm method").tag("type", "fail").tag("id", "multicast").register(meterRegistry);
-        this.failSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "sendall").register(meterRegistry);
-        this.failMessageCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "message").register(meterRegistry);
-        this.successMutilCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "multicast").register(meterRegistry);
-        this.successSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "senall").register(meterRegistry);
-        this.successMessageCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "message").register(meterRegistry);
+        this.failMutilCastCounter = Counter.builder("fcm.send.counter")
+                                           .description("The send count of fail/success by fcm method")
+                                           .tag("type", "fail").tag("id", "multicast").register(meterRegistry);
+        this.failSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "sendall")
+                                             .register(meterRegistry);
+        this.failMessageCounter = Counter.builder("fcm.send.counter").tag("type", "fail").tag("id", "message")
+                                         .register(meterRegistry);
+        this.successMutilCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "multicast")
+                                              .register(meterRegistry);
+        this.successSendAllCastCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "senall")
+                                                .register(meterRegistry);
+        this.successMessageCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "message")
+                                            .register(meterRegistry);
     }
 
     /**
@@ -66,16 +72,28 @@ public class FcmApiService {
      * @throws FirebaseMessagingException
      */
     public String sendMessage(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
+        //null, app name, title, body check
+        validateMessage(msg);
+
+        // Token check
+        if (!StringUtils.hasLength(msg.getToken())) {
+            throw new InvalidRequestException("FcmMessage.token is required");
+        }
 
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
-        Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).setToken(msg.getToken()).build();
+        Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build())
+                                 .setAndroidConfig(fcmBuilder.getAosBuilder().build())
+                                 .setApnsConfig(fcmBuilder.getIosBuilder().build())
+                                 .setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData())
+                                 .setToken(msg.getToken()).build();
 
         String messageId = FirebaseMessaging.getInstance().send(message);
-        if (messageId == null) { // 전송실패
-            failMessageCounter.increment();
-            fcmErrorTokenLog.info("{},{},{}", msg.getToken(), "MESSAGE_ID_NULL", "SEND MESSAGE ERROR"); // 에러토큰만 별도 관리
+        if (StringUtils.hasLength(messageId)) {
+            successMessageCounter.increment();
+        } else {
+            failMessageCounter.increment();  // 전송 실패
+            fcmErrorTokenLog.info("{},{},{}", msg.getToken(), "MESSAGE_ID_NULL", "SEND MESSAGE ERROR"); // 에러 토큰만 별도 관리
         }
-        successMessageCounter.increment();
         return messageId;
     }
 
@@ -89,8 +107,25 @@ public class FcmApiService {
      * @throws FirebaseMessagingException
      */
     public List<FailureToken> sendMulticast(@Nonnull FcmMessage msg) throws FirebaseMessagingException {
+        // null, app name, title, body check
+        validateMessage(msg);
+
+        // Token check
+        if (msg.getTokens() == null || msg.getTokens().isEmpty()) {
+            throw new InvalidRequestException("FcmMessage.token is required");
+        }
+
+        if (msg.getTokens().size() > 500) {
+            throw new InvalidRequestException("FcmMessage.tokens: The maximum token count of 500 has been exceeded.");
+        }
+
         FcmBuilder fcmBuilder = createFcmBuilder(msg);
-        MulticastMessage message = MulticastMessage.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).addAllTokens(msg.getTokens()).build();
+        MulticastMessage message = MulticastMessage.builder()
+                                                   .setNotification(fcmBuilder.getNotificationBuilder().build())
+                                                   .setAndroidConfig(fcmBuilder.getAosBuilder().build())
+                                                   .setApnsConfig(fcmBuilder.getIosBuilder().build())
+                                                   .setWebpushConfig(fcmBuilder.getWebBuilder().build())
+                                                   .putAllData(msg.getData()).addAllTokens(msg.getTokens()).build();
 
         List<FailureToken> failureTokenList = new ArrayList<>();
         BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
@@ -124,11 +159,34 @@ public class FcmApiService {
      */
     public List<FailureToken> sendAll(@Nonnull List<FcmMessage> msgs) throws FirebaseMessagingException {
 
+        // Token check
+        if (msgs == null || msgs.isEmpty()) {
+            throw new InvalidRequestException("FcmMessages is required");
+        }
+
+        if (msgs.size() > 500) {
+            throw new InvalidRequestException("FcmMessage.tokens: The maximum token count of 500 has been exceeded.");
+        }
+
+        for (FcmMessage msg : msgs) {
+            // null, app name, title, body check
+            validateMessage(msg);
+
+            // Token check
+            if (!StringUtils.hasLength(msg.getToken())) {
+                throw new InvalidRequestException("FcmMessage.token is required");
+            }
+        }
+
         List<Message> messageList = new ArrayList<>();
 
         for (FcmMessage msg : msgs) {
             FcmBuilder fcmBuilder = createFcmBuilder(msg);
-            Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build()).setAndroidConfig(fcmBuilder.getAosBuilder().build()).setApnsConfig(fcmBuilder.getIosBuilder().build()).setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData()).setToken(msg.getToken()).build();
+            Message message = Message.builder().setNotification(fcmBuilder.getNotificationBuilder().build())
+                                     .setAndroidConfig(fcmBuilder.getAosBuilder().build())
+                                     .setApnsConfig(fcmBuilder.getIosBuilder().build())
+                                     .setWebpushConfig(fcmBuilder.getWebBuilder().build()).putAllData(msg.getData())
+                                     .setToken(msg.getToken()).build();
             messageList.add(message);
         }
 
@@ -154,20 +212,20 @@ public class FcmApiService {
     }
 
 
-
     @Nonnull
     public String getCsvLogFailTokens(String date) throws IOException {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        FileAppender<?> fileAppender = (FileAppender<?>) loggerContext.getLogger("fcmErrorToken").getAppender("ERROR_TOKEN_CSV");
+        FileAppender<?> fileAppender = (FileAppender<?>) loggerContext.getLogger("fcmErrorToken")
+                                                                      .getAppender("ERROR_TOKEN_CSV");
         String filePath = fileAppender.getFile();
         String nowYmd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         LocalDate ldDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         if (nowYmd.compareTo(date) > 0) {
             filePath = filePath.replaceAll("\\.log", "")
-                    .concat("-")
-                    .concat(ldDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .concat(".log");
+                               .concat("-")
+                               .concat(ldDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                               .concat(".log");
         }
         log.info("Failed token log file path: {}", filePath);
 
@@ -198,15 +256,17 @@ public class FcmApiService {
      */
     private FcmBuilder createFcmBuilder(FcmMessage msg) {
         // 공통
-        Notification.Builder notificationBuilder = Notification.builder().setTitle(msg.getTitle()).setBody(msg.getBody());
+        Notification.Builder notificationBuilder = Notification.builder().setTitle(msg.getTitle())
+                                                               .setBody(msg.getBody());
 
         // AOS
         AndroidConfig.Builder aosBuilder = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH);
 
         // APN
-        ApnsConfig.Builder iosBuilder = ApnsConfig.builder().setAps(Aps.builder().setContentAvailable(true) //IOS 푸시 뱃지 카운트
-                .setMutableContent(true) // 이미지표시
-                .build());
+        ApnsConfig.Builder iosBuilder = ApnsConfig.builder()
+                                                  .setAps(Aps.builder().setContentAvailable(true) //IOS 푸시 뱃지 카운트
+                                                             .setMutableContent(true) // 이미지표시
+                                                             .build());
         // Web
         WebpushConfig.Builder webBuilder = WebpushConfig.builder();
 
@@ -217,8 +277,25 @@ public class FcmApiService {
             webBuilder.setNotification(WebpushNotification.builder().setImage(msg.getImage()).build());
         }
 
-        return FcmBuilder.builder().notificationBuilder(notificationBuilder).aosBuilder(aosBuilder).iosBuilder(iosBuilder).webBuilder(webBuilder).build();
+        return FcmBuilder.builder().notificationBuilder(notificationBuilder).aosBuilder(aosBuilder)
+                         .iosBuilder(iosBuilder).webBuilder(webBuilder).build();
 
+    }
+
+
+    private void validateMessage(FcmMessage msg) {
+        if (msg == null) {
+            throw new InvalidRequestException("FcmMessage can not be null.");
+        }
+        if (!StringUtils.hasLength(msg.getAppName())) {
+            throw new InvalidRequestException("FcmMessage.appName is required.");
+        }
+        if (!StringUtils.hasLength(msg.getTitle())) {
+            throw new InvalidRequestException("FcmMessage.title is required.");
+        }
+        if (!StringUtils.hasLength(msg.getBody())) {
+            throw new InvalidRequestException("FcmMessage.body is required.");
+        }
     }
 
 }
