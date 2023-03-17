@@ -35,6 +35,9 @@ public class IntervalParser {
             case 'h':
                 unit = TimeUnit.HOURS;
                 break;
+            case 'd':
+                unit = TimeUnit.DAYS;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid interval unit: " + unitChar);
         }

@@ -28,7 +28,7 @@ public class FcmMsgQueryRepository  {
                     AND m.createdAt >= :scrapeTime
                     AND m.pushYn = 'N'
                 ORDER BY
-                    m.createdAt desc
+                    m.msgSeq desc
                 LIMIT 500             
                     """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(
@@ -59,7 +59,7 @@ public class FcmMsgQueryRepository  {
                 )
                 AND m.sendYn = 'N'
             ORDER BY
-                m.createdAt desc
+                m.msgSeq desc
             LIMIT 500
                 """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(
@@ -68,5 +68,22 @@ public class FcmMsgQueryRepository  {
         query.setParameter("msgKey", msgKey);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
         return query.getResultList();
+    }
+
+    public void batchUpdate(List<FcmMsgEntity> fcmMsgEntities) {
+        int batchSize = 100;
+        for (int i = 0; i < fcmMsgEntities.size(); i++) {
+            FcmMsgEntity fcmMsgEntity = fcmMsgEntities.get(i);
+            entityManager.persist(fcmMsgEntity);
+            if ((i + 1) % batchSize == 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
+        }
+
+        if (fcmMsgEntities.size() % batchSize != 0) {
+            entityManager.flush();
+            entityManager.clear();
+        }
     }
 }

@@ -1,22 +1,14 @@
 package com.ecobridge.fcm.server;
 
-import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
-import com.ecobridge.fcm.server.service.FcmDbService;
+import com.ecobridge.fcm.server.tasks.FcmDbPushTask;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -30,7 +22,7 @@ public class JpaTest {
     FcmMsgEntityRepository fcmMsgEntityRepository;
 
     @Autowired
-    FcmDbService fcmDbService;
+    FcmDbPushTask fcmDbService;
 
     @Autowired
     Environment env;
@@ -42,7 +34,7 @@ public class JpaTest {
 //        List<FcmMsgEntity> list = fcmMsgQueryRepository.findTargetList("ecobridgeapp",
 //                Timestamp.valueOf(LocalDateTime.now().minusSeconds(60)));
 
-        fcmDbService.sendFcmFromDb("ecobridge");
+        //fcmDbService.scheduleFcmFromDb("ecobridge");
 
 //        List<FcmMsgEntity> list2 = fcmMsgQueryRepository.findNextList("ecobridgeapp",
 //                list.get(list.size()-6).getMsgKey());
