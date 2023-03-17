@@ -1,0 +1,40 @@
+# Nuxt.js 개발 관련 파일 제외
+node_modules/
+.nuxt/
+dist/
+
+# Node.js 개발 관련 파일 제외
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Java 개발 관련 파일 제외
+*.class
+*.jar
+*.war
+
+# macOS 관련 파일 제외
+.DS_Store
+*/.DS_Store
+
+# Maven 관련 파일 제외
+target/
+
+# Spring Boot 개발 관련 파일 제외
+*.log
+logs/
+build/
+out/
+.idea/
+.vscode/
+
+# Prometheus 관련 파일 제외
+data/
+
+# PostgreSQL 관련 파일 제외
+*.psql
+*.pgdump
+*.sql
+
+
+
