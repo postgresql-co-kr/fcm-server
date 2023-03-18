@@ -14,10 +14,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public class FcmMsgQueryRepository  {
+public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
 
-    @PersistenceContext
-    EntityManager entityManager;
     @Timed(value = "fcm.msg.query.repository.sql.timed")
     public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapeTime) {
         String sql = """
@@ -72,20 +70,8 @@ public class FcmMsgQueryRepository  {
         return query.getResultList();
     }
 
-    public void batchUpdate(List<FcmMsgEntity> fcmMsgEntities) {
-        int batchSize = 100;
-        for (int i = 0; i < fcmMsgEntities.size(); i++) {
-            FcmMsgEntity fcmMsgEntity = fcmMsgEntities.get(i);
-            entityManager.persist(fcmMsgEntity);
-            if ((i + 1) % batchSize == 0) {
-                entityManager.flush();
-                entityManager.clear();
-            }
-        }
-
-        if (fcmMsgEntities.size() % batchSize != 0) {
-            entityManager.flush();
-            entityManager.clear();
-        }
+    @Timed(value = "fcm.msg.query.repository.sql.timed")
+    public void batchUpdateMsg(List<FcmMsgEntity> fcmMsgEntities) {
+       super.batchUpdate(fcmMsgEntities);
     }
 }

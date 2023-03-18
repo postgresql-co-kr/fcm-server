@@ -1,24 +1,22 @@
-package com.ecobridge.fcm.server.tasks;
+package com.ecobridge.fcm.server.task;
 
 import com.ecobridge.fcm.server.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.service.FcmApiService;
-import com.ecobridge.fcm.server.utils.IntervalParser;
+import com.ecobridge.fcm.server.util.IntervalParser;
 import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmApp;
 import com.ecobridge.fcm.server.vo.FcmMessage;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -39,20 +37,24 @@ public class FcmDbPushTask {
     private final FcmPropsConfig fcmPropsConfig;
     private final FcmApiService fcmApiService;
 
-    @Autowired
-    private PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager transactionManager;
+    private final Environment env;
 
-    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(10); // TODO: schedule pool size 설정 으로 고려
+    private ScheduledExecutorService executor;
     private Map<String, Future<?>> futures = new HashMap<>();
 
     public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService,
-                         FcmMsgEntityRepository fcmMsgEntityRepository) {
+                         FcmMsgEntityRepository fcmMsgEntityRepository, PlatformTransactionManager transactionManager, Environment env) {
         this.fcmMsgQueryRepository = fcmMsgQueryRepository;
         this.fcmPropsConfig = fcmPropsConfig;
         this.fcmApiService = fcmApiService;
+        this.transactionManager = transactionManager;
+        this.env = env;
+        this.executor = Executors.newScheduledThreadPool(env.getProperty("db.scrape.thread.pool.size" , Integer.class, 5));
+
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "${db.scheduled.fixed-rate:5000}")
     public void scheduleFcmFromDb() throws ExecutionException, InterruptedException {
         List<FcmApp> fcmApps = fcmPropsConfig.getFcmApps();
 
@@ -139,7 +141,7 @@ public class FcmDbPushTask {
         }
 
         // db update
-        fcmMsgQueryRepository.batchUpdate(fcmMsgEntities);
+        fcmMsgQueryRepository.batchUpdateMsg(fcmMsgEntities);
 
         // next 500
         FcmMsgEntity lastFcmMsg = targetList.get(targetList.size() - 1);

@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: dev
+    default: local
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -20,6 +20,7 @@ management:
         include: "health,metrics,prometheus"
 
 jasypt.encryptor.env.name: JASYPT_ENCRYPTOR_PASSWORD
+
 
 ---
 spring:
@@ -56,16 +57,21 @@ fcm-apps:
   -
     name: ecobridge
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 3
-    read-timeout: 5
+    connection-timeout: 5 # seconds
+    read-timeout: 10 # seconds set 10~30
+    db-log: true # fcm send success/fail db log
     db-push: true  # true: db fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
-#  -
-#    name: postgresql
-#    google-application-credentials: ./keys/serviceAccountKey-postgresql.json
-#    connection-timeout: 3
-#    read-timeout: 5
 
+
+db:
+  schema: "fcm_owner"
+  scheduled:
+    fixed-rate: 5000 # ms  scheduled time
+  scrape:
+    thread:
+      pool:
+        size: 2
 ---
 spring:
   config:
@@ -98,11 +104,20 @@ fcm-apps:
   -
     name: ecobridge
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 3
-    read-timeout: 5
+    connection-timeout: 5 # seconds
+    read-timeout: 10 # seconds set 10~30
+    db-log: true # fcm send success/fail db log
     db-push: true  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
 
+db:
+  schema: "fcm_owner"
+  scheduled:
+    fixed-rate: 5000 # ms  scheduled time
+  scrape:
+    thread:
+      pool:
+        size: 5
 ---
 spring:
   config:
@@ -135,7 +150,17 @@ fcm-apps:
   -
     name: ecobridge
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 3
-    read-timeout: 5
-    db-push: false  # true: db insert fcm send
+    connection-timeout: 5 # seconds
+    read-timeout: 20 # seconds set 10~30
+    db-log: true # fcm send success/fail db log
+    db-push: true  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
+
+db:
+  schema: "fcm_owner"
+  scheduled:
+    fixed-rate: 5000 # ms  scheduled time
+  scrape:
+    thread:
+      pool:
+        size: 10

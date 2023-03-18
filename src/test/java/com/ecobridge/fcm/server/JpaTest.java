@@ -2,7 +2,7 @@ package com.ecobridge.fcm.server;
 
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
-import com.ecobridge.fcm.server.tasks.FcmDbPushTask;
+import com.ecobridge.fcm.server.task.FcmDbPushTask;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

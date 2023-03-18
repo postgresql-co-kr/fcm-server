@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.utils;
+package com.ecobridge.fcm.server.util;
 
 import java.util.concurrent.TimeUnit;
 

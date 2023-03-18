@@ -2,10 +2,15 @@ package com.ecobridge.fcm.server.service;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.FileAppender;
+import com.ecobridge.fcm.server.config.FcmPropsConfig;
+import com.ecobridge.fcm.server.entity.FcmLogEntity;
 import com.ecobridge.fcm.server.exception.InvalidRequestException;
+import com.ecobridge.fcm.server.repository.FcmLogEntityRepository;
+import com.ecobridge.fcm.server.repository.FcmLogQueryRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.vo.FailureToken;
+import com.ecobridge.fcm.server.vo.FcmApp;
 import com.ecobridge.fcm.server.vo.FcmBuilder;
 import com.ecobridge.fcm.server.vo.FcmMessage;
 import com.google.firebase.messaging.*;
@@ -15,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +32,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -40,15 +47,15 @@ public class FcmApiService {
     private final Counter successMutilCastCounter;
     private final Counter successSendAllCastCounter;
     private final Counter successMessageCounter;
+    private final FcmPropsConfig fcmPropsConfig;
+
+    private final FcmMsgEntityRepository fcmMsgEntityRepository;
+    private final FcmLogEntityRepository fcmLogEntityRepository;
+    private final FcmMsgQueryRepository fcmMsgQueryRepository;
+    private final FcmLogQueryRepository fcmLogQueryRepository;
 
     @Autowired
-    private FcmMsgEntityRepository fcmMsgEntityRepository;
-
-    @Autowired
-    private FcmMsgQueryRepository fcmMsgQueryRepository;
-
-    @Autowired
-    public FcmApiService(MeterRegistry meterRegistry) {
+    public FcmApiService(MeterRegistry meterRegistry, Environment env, FcmPropsConfig fcmPropsConfig, FcmMsgEntityRepository fcmMsgEntityRepository, FcmLogEntityRepository fcmLogEntityRepository, FcmMsgQueryRepository fcmMsgQueryRepository, FcmLogQueryRepository fcmLogQueryRepository) {
         this.failMutilCastCounter = Counter.builder("fcm.send.counter")
                                            .description("The send count of fail/success by fcm method")
                                            .tag("type", "fail").tag("id", "multicast").register(meterRegistry);
@@ -62,6 +69,11 @@ public class FcmApiService {
                                                 .register(meterRegistry);
         this.successMessageCounter = Counter.builder("fcm.send.counter").tag("type", "success").tag("id", "message")
                                             .register(meterRegistry);
+        this.fcmPropsConfig = fcmPropsConfig;
+        this.fcmMsgEntityRepository = fcmMsgEntityRepository;
+        this.fcmLogEntityRepository = fcmLogEntityRepository;
+        this.fcmMsgQueryRepository = fcmMsgQueryRepository;
+        this.fcmLogQueryRepository = fcmLogQueryRepository;
     }
 
     /**
@@ -88,13 +100,33 @@ public class FcmApiService {
                                  .setToken(msg.getToken()).build();
 
         String messageId = FirebaseMessaging.getInstance().send(message);
+
+        String successYn = null;
         if (StringUtils.hasLength(messageId)) {
+            successYn = "Y";
             successMessageCounter.increment();
+
         } else {
+            successYn = "N";
             failMessageCounter.increment();  // 전송 실패
             fcmErrorTokenLog.info("{},{},{}", msg.getToken(), "MESSAGE_ID_NULL", "SEND MESSAGE ERROR"); // 에러 토큰만 별도 관리
         }
+
+        if (isDbLog(msg.getAppName())) {
+            fcmLogEntityRepository.save(createFcmLogEntity(msg, successYn));
+        }
         return messageId;
+    }
+
+    private boolean isDbLog(String appName) {
+        FcmApp fcmApp = fcmPropsConfig.getFcmApps().stream().filter(vo -> vo.getName().equals(appName))
+                               .findFirst().orElseGet(null);
+        if (fcmApp != null && fcmApp.isDbLog()) {
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -129,21 +161,38 @@ public class FcmApiService {
 
         List<FailureToken> failureTokenList = new ArrayList<>();
         BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-
-        if (response.getFailureCount() > 0) {
-            List<SendResponse> sendResponseList = response.getResponses();
-            for (int i = 0; i < sendResponseList.size(); i++) {
-                SendResponse sendResponse = sendResponseList.get(i);
-                if (!sendResponse.isSuccessful()) {
-                    FirebaseMessagingException exception = sendResponse.getException();
-                    String token = msg.getTokens().get(i);
-                    failureTokenList.add(makeFailureToken(token, exception));
-                    failMutilCastCounter.increment();
-
-                } else {
-                    successMutilCastCounter.increment();
-                }
+        List<FcmLogEntity> logEntityList = new ArrayList<>();
+        List<SendResponse> sendResponseList = response.getResponses();
+        for (int i = 0; i < sendResponseList.size(); i++) {
+            SendResponse sendResponse = sendResponseList.get(i);
+            String successYn = null;
+            if (!sendResponse.isSuccessful()) {
+                FirebaseMessagingException exception = sendResponse.getException();
+                String token = msg.getTokens().get(i);
+                failureTokenList.add(makeFailureToken(token, exception));
+                failMutilCastCounter.increment();
+                successYn = "N";
+            } else {
+                successMutilCastCounter.increment();
+                successYn = "Y";
             }
+
+            if (isDbLog(msg.getAppName())) {
+                FcmLogEntity logEntity =
+                        createFcmLogEntity(
+                                FcmMessage.builder().appName(msg.getAppName())
+                                          .title(msg.getTitle())
+                                          .body(msg.getBody()).token(msg.getToken())
+                                          .device(msg.getDevice())
+                                          .image(msg.getImage())
+                                          .build(), successYn);
+                logEntityList.add(logEntity);
+            }
+
+        }
+
+        if (!logEntityList.isEmpty()) {
+            fcmLogQueryRepository.batchUpdateLog(logEntityList);
         }
 
         return failureTokenList;
@@ -192,20 +241,28 @@ public class FcmApiService {
 
         List<FailureToken> failureTokenList = new ArrayList<>();
         BatchResponse response = FirebaseMessaging.getInstance().sendAll(messageList);//sendAll
-
-        if (response.getFailureCount() > 0) {
-            List<SendResponse> sendResponseList = response.getResponses();
-            for (int i = 0; i < sendResponseList.size(); i++) {
-                SendResponse sendResponse = sendResponseList.get(i);
-                if (!sendResponse.isSuccessful()) {
-                    FirebaseMessagingException exception = sendResponse.getException();
-                    String token = msgs.get(i).getToken();
-                    failureTokenList.add(makeFailureToken(token, exception));
-                    failSendAllCastCounter.increment();
-                } else {
-                    successSendAllCastCounter.increment();
-                }
+        List<FcmLogEntity> logEntityList = new ArrayList<>();
+        List<SendResponse> sendResponseList = response.getResponses();
+        for (int i = 0; i < sendResponseList.size(); i++) {
+            SendResponse sendResponse = sendResponseList.get(i);
+            String successYn = null;
+            if (!sendResponse.isSuccessful()) {
+                FirebaseMessagingException exception = sendResponse.getException();
+                String token = msgs.get(i).getToken();
+                failureTokenList.add(makeFailureToken(token, exception));
+                failSendAllCastCounter.increment();
+                successYn = "N";
+            } else {
+                successSendAllCastCounter.increment();
+                successYn = "Y";
             }
+            if (isDbLog(msgs.get(i).getAppName())) {
+                logEntityList.add(createFcmLogEntity(msgs.get(i), successYn));
+            }
+        }
+
+        if (!logEntityList.isEmpty()) {
+            fcmLogQueryRepository.batchUpdateLog(logEntityList);
         }
 
         return failureTokenList;
@@ -296,6 +353,16 @@ public class FcmApiService {
         if (!StringUtils.hasLength(msg.getBody())) {
             throw new InvalidRequestException("FcmMessage.body is required.");
         }
+    }
+
+    private FcmLogEntity createFcmLogEntity(FcmMessage msg, String successYn) {
+        FcmLogEntity log = new FcmLogEntity();
+        log.setLogKey(UUID.randomUUID().toString().replaceAll("\\-", ""));
+        log.setAppName(msg.getAppName());
+        log.setFcmToken(msg.getToken());
+        log.setDeviceType(msg.getDevice().toString());
+        log.setSuccessYn(successYn);
+        return log;
     }
 
 }
