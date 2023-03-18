@@ -1,6 +1,7 @@
 package com.ecobridge.fcm.server.repository;
 
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
+import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
@@ -17,6 +18,7 @@ public class FcmMsgQueryRepository  {
 
     @PersistenceContext
     EntityManager entityManager;
+    @Timed(value = "fcm.msg.query.repository.sql.timed")
     public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapeTime) {
         String sql = """
                 SELECT 
@@ -40,7 +42,7 @@ public class FcmMsgQueryRepository  {
         return query.getResultList();
     }
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Timed(value = "fcm.msg.query.repository.sql.timed")
     public List<FcmMsgEntity> findNextList(String appName, String msgKey) {
         String sql = """
             SELECT

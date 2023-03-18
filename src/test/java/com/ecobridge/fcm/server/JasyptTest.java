@@ -16,7 +16,10 @@ public class JasyptTest  {
     JasyptService jasyptService;
     @Test
     void encryptTest() {
-        System.out.println(jasyptService.encrypt("fcm-server"));
+        System.out.println(jasyptService.encrypt("org.postgresql.Driver"));
+        System.out.println(jasyptService.encrypt("jdbc:postgresql://localhost:5432/fcm_db"));
+        System.out.println(jasyptService.encrypt("fcm_app"));
+        System.out.println(jasyptService.encrypt("fcm_app123#@!"));
 
 
     }

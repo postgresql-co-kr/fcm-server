@@ -32,3 +32,6 @@ Thumbs.db
 *.tmp
 *.temp
 *.swp
+
+# Process files
+*.pid

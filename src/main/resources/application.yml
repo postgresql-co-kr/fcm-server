@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: local
+    default: dev
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -74,9 +74,9 @@ spring:
         - dev
   pid.file: "./application.pid"
   datasource:
-    url: ENC(DfolngJOvmVHdU6JsObUg2mtU0+kcbcjYBaWv6C7jkozTWiIGYADxy3QtqwXxzU7HVAq495iqM6KsuMJsI5L3AhRLmG6wa6n8IhIF4gs0bs=)
-    username: ENC(bVlmVthKcLKTpvRC4g+i4PzjWSfDRNv1RA4nE9IGWr677LqrebcPYZ8Rr6x2tHWS)
-    password: ENC(oJxdyDfYlbmNfvm7ebuVIUChDDOp9lxgBaeQZ09/E9Payhetk73hAYPGVy4+okj0)
+    url: ENC(M3W/gAngWlI6P2k24bJ1IrnRNRw2rOcb3UMV4UDMacrqZFm1AZQQRLSyzNfhrYKin2wbsT1Btzr2qnp+AEVxUNq9g/pNnBXk5cOHr3uh4TU=)
+    username: ENC(7m3a5fFbtYv0z0foT5TV/z7lIJvq4cYi1DOrOZtYw2bqa9mqtUiLfsIZ/WDl/Uq4)
+    password: ENC(8idO4bt8sN7lRk2EHCdr9tNBeb772Ckq77om8en+YWMDfrW5oz1YAlqcdWJuczx1)
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
@@ -100,7 +100,7 @@ fcm-apps:
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 3
     read-timeout: 5
-    db-push: false  # true: db insert fcm send
+    db-push: true  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
 
 ---

@@ -30,13 +30,13 @@ public class FcmApiController {
     }
 
     @GetMapping("/hello")
-    @Timed(value = "fcm.hello.time", description = "hello response time")
+    @Timed(value = "fcm.fcm.api.controller.timed")
     public String hello() throws FirebaseMessagingException {
         return "Hello fcm-server";
     }
 
     @PostMapping("/send/multicast")
-    @Timed(value = "fcm.send.multicast.time", description = "multicast response time")
+    @Timed(value = "fcm.api.controller.timed")
     public FcmResponse multicast(@RequestBody FcmMessage msg) throws FirebaseMessagingException {
         log.debug("/send/multicast request body: {}", msg);
         List<FailureToken> failureTokens = service.sendMulticast(msg);
@@ -47,7 +47,7 @@ public class FcmApiController {
     }
 
     @PostMapping("/send/all")
-    @Timed(value = "fcm.send.all.time", description = "send all response time")
+    @Timed(value = "fcm.api.controller.timed")
     public FcmResponse sendAll(@RequestBody List<FcmMessage> msgs) throws FirebaseMessagingException {
         log.debug("/send/all request body: {}", msgs);
         List<FailureToken> failureTokens = service.sendAll(msgs);
@@ -58,7 +58,7 @@ public class FcmApiController {
     }
 
     @PostMapping("/send/message")
-    @Timed(value = "fcm.send.message.time", description = "message response time")
+    @Timed(value = "fcm.api.controller.timed")
     public FcmResponse sendMessage(@RequestBody FcmMessage msg) throws FirebaseMessagingException {
         log.debug("/send/message request body: {}", msg);
         String messageId = service.sendMessage(msg);
@@ -70,7 +70,7 @@ public class FcmApiController {
     }
 
     @GetMapping(value = "/log/failed/tokens/{date}", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv"})
-    @Timed(value = "fcm.log.failed.tokens.time", description = "get log fail tokens response time")
+    @Timed(value = "fcm.api.controller.timed")
     public String getLogFailTokens(@PathVariable("date") String date, HttpServletRequest request) throws IOException {
         //CSV 형식으로 반환하는 로직
         String result = service.getCsvLogFailTokens(date);
