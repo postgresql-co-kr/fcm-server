@@ -2,6 +2,7 @@ package com.ecobridge.fcm.server.tasks;
 
 import com.ecobridge.fcm.server.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
+import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.service.FcmApiService;
 import com.ecobridge.fcm.server.utils.IntervalParser;
@@ -33,6 +34,7 @@ import java.util.concurrent.*;
 @Slf4j
 @EnableScheduling
 public class FcmDbPushTask {
+    private final FcmMsgEntityRepository fcmMsgEntityRepository;
     private final FcmMsgQueryRepository fcmMsgQueryRepository;
     private final FcmPropsConfig fcmPropsConfig;
     private final FcmApiService fcmApiService;
@@ -43,10 +45,12 @@ public class FcmDbPushTask {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(10); // TODO: schedule pool size 설정 으로 고려
     private Map<String, Future<?>> futures = new HashMap<>();
 
-    public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService) {
+    public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService,
+                         FcmMsgEntityRepository fcmMsgEntityRepository) {
         this.fcmMsgQueryRepository = fcmMsgQueryRepository;
         this.fcmPropsConfig = fcmPropsConfig;
         this.fcmApiService = fcmApiService;
+        this.fcmMsgEntityRepository = fcmMsgEntityRepository;
     }
 
     @Scheduled(fixedRate = 5000)
@@ -92,7 +96,6 @@ public class FcmDbPushTask {
                 future = executor.submit(callable);
                 futures.put(appName, future);
 
-
             } else {
                 // 실행 중인 작업이 있으므로 스케줄링을 건너뜁니다.
                 log.info("{} push fcm task is running..", appName);
@@ -100,12 +103,14 @@ public class FcmDbPushTask {
         }
     }
 
-
     private void pushFcmFromDb(String appName, long minusSeconds) throws FirebaseMessagingException {
         Timestamp scrapTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(minusSeconds));
         List<FcmMsgEntity> targetList = fcmMsgQueryRepository.findTargetList(appName, scrapTime);
+        send(targetList);
+    }
 
-        if (targetList.isEmpty()) {
+    private void send(List<FcmMsgEntity> targetList) throws FirebaseMessagingException {
+        if (targetList == null || targetList.isEmpty()) {
             log.info("The number of Fcm push targets(db) is zero.");
             return;
         }
@@ -133,8 +138,14 @@ public class FcmDbPushTask {
             fcmMsgEntity.setPushYn("Y");
             fcmMsgEntities.add(fcmMsgEntity); // add list
         }
+
         // db update
         fcmMsgQueryRepository.batchUpdate(fcmMsgEntities);
+
+        // next 500
+        FcmMsgEntity lastFcmMsg = targetList.get(targetList.size() - 1);
+        List<FcmMsgEntity> nextTagetList = fcmMsgQueryRepository.findNextList(lastFcmMsg.getAppName(), lastFcmMsg.getMsgKey());
+        send(nextTagetList);
     }
 
 }
