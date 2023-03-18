@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 public class IntervalParser {
     /**
      *  parse 메소드는 문자열 인자 intervalStr을 받아 시간 간격을 밀리초 단위로 반환합니다.
-     *  예를 들어, parse("5s")는 5000을 반환하고, parse("2h")는 7200000을 반환합니다.
+     *  예를 들어, parse("5s")는 5을 반환하고, parse("1m")는 60을 반환합니다.
+     *  1h, 1d
      *  만약 인자로 잘못된 문자열이 주어진다면 IllegalArgumentException이 발생합니다.
      * @param intervalStr
      * @return
@@ -42,6 +43,6 @@ public class IntervalParser {
                 throw new IllegalArgumentException("Invalid interval unit: " + unitChar);
         }
 
-        return unit.toMillis(duration);
+        return unit.toSeconds(duration);
     }
 }

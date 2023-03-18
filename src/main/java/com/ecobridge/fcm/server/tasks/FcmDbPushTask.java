@@ -34,7 +34,7 @@ import java.util.concurrent.*;
 @Slf4j
 @EnableScheduling
 public class FcmDbPushTask {
-    private final FcmMsgEntityRepository fcmMsgEntityRepository;
+
     private final FcmMsgQueryRepository fcmMsgQueryRepository;
     private final FcmPropsConfig fcmPropsConfig;
     private final FcmApiService fcmApiService;
@@ -50,7 +50,6 @@ public class FcmDbPushTask {
         this.fcmMsgQueryRepository = fcmMsgQueryRepository;
         this.fcmPropsConfig = fcmPropsConfig;
         this.fcmApiService = fcmApiService;
-        this.fcmMsgEntityRepository = fcmMsgEntityRepository;
     }
 
     @Scheduled(fixedRate = 5000)

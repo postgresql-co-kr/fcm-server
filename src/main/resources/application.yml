@@ -59,7 +59,7 @@ fcm-apps:
     connection-timeout: 3
     read-timeout: 5
     db-push: true  # true: db fcm send
-    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
+    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
 #  -
 #    name: postgresql
 #    google-application-credentials: ./keys/serviceAccountKey-postgresql.json
