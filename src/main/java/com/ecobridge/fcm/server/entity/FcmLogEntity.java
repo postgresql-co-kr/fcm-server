@@ -6,7 +6,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Entity(name="fcmLog")
-@Table(name="fcm_log", schema="fcm_owner")
+@Table(name="fcm_log")
 @Data
 public class FcmLogEntity {
 

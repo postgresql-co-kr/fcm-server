@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.sql.Timestamp;
 
 @Entity(name="fcmMsg")
-@Table(name="fcm_msg", schema="fcm_owner")
+@Table(name="fcm_msg")
 @Data
 public class FcmMsgEntity {
     @Id

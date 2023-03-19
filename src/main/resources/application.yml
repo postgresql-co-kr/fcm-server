@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: local
+    default: dev
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -39,6 +39,7 @@ spring:
     username: sa
     password:
     hikari:
+      schema: "fcm_owner"  # change
       connection-timeout: 30000
       maximum-pool-size: 2
 
@@ -49,6 +50,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
+        default_schema: "fcm_owner"  # change
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         use_sql_comments: true
@@ -65,7 +67,6 @@ fcm-apps:
 
 
 db:
-  schema: "fcm_owner"
   scheduled:
     fixed-rate: 5000 # ms  scheduled time
   scrape:
@@ -85,6 +86,7 @@ spring:
     password: ENC(8idO4bt8sN7lRk2EHCdr9tNBeb772Ckq77om8en+YWMDfrW5oz1YAlqcdWJuczx1)
     driver-class-name: org.postgresql.Driver
     hikari:
+      schema: "fcm_owner"  # change
       connection-timeout: 30000
       maximum-pool-size: 10
 
@@ -95,6 +97,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
+        default_schema: "fcm_owner"  # change
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         show_sql: true
@@ -131,6 +134,7 @@ spring:
     password: ENC(oJxdyDfYlbmNfvm7ebuVIUChDDOp9lxgBaeQZ09/E9Payhetk73hAYPGVy4+okj0)
     driver-class-name: org.postgresql.Driver
     hikari:
+      schema: "fcm_owner"  # change
       connection-timeout: 30000
       maximum-pool-size: 20
 
@@ -141,6 +145,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
+        default_schema: "fcm_owner"  # change
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
         show_sql: false

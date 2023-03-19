@@ -21,9 +21,6 @@ import java.util.List;
 @Configuration
 public class FirebaseConfig {
 
-    @Autowired
-    private Environment env;
-
     private final FcmPropsConfig fcmPropsConfig;
 
     public FirebaseConfig(FcmPropsConfig fcmPropsConfig) {
@@ -33,7 +30,6 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         log.info("Fcm-server configuration init...");
-        log.info("Fcm-server active profile - {}", env.getActiveProfiles());
 
         List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
         for (FcmApp fcmApp: fcmAppsList) {
