@@ -2,8 +2,6 @@ package com.ecobridge.fcm.server.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-
 
 import java.sql.Timestamp;
 

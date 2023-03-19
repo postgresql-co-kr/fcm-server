@@ -2,12 +2,8 @@ package com.ecobridge.fcm.server.repository;
 
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import io.micrometer.core.annotation.Timed;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;

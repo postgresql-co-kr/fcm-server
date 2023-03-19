@@ -1,20 +1,15 @@
 package com.ecobridge.fcm.server.controller;
 
 import com.ecobridge.fcm.server.service.FcmApiService;
-import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmMessage;
 import com.ecobridge.fcm.server.vo.FcmResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import io.micrometer.core.annotation.Timed;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController

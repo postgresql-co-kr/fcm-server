@@ -1,6 +1,5 @@
 package com.ecobridge.fcm.server.repository;
 
-import com.ecobridge.fcm.server.entity.FcmLogEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 

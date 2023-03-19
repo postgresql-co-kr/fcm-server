@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
