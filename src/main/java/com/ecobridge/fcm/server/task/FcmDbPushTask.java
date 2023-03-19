@@ -2,9 +2,11 @@ package com.ecobridge.fcm.server.task;
 
 import com.ecobridge.fcm.server.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
+import com.ecobridge.fcm.server.enums.FcmDevice;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.service.FcmApiService;
+import com.ecobridge.fcm.server.util.EnumFinder;
 import com.ecobridge.fcm.server.util.IntervalParser;
 import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmApp;
@@ -19,6 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -43,14 +46,13 @@ public class FcmDbPushTask {
     private ScheduledExecutorService executor;
     private Map<String, Future<?>> futures = new HashMap<>();
 
-    public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService,
-                         FcmMsgEntityRepository fcmMsgEntityRepository, PlatformTransactionManager transactionManager, Environment env) {
+    public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService, FcmMsgEntityRepository fcmMsgEntityRepository, PlatformTransactionManager transactionManager, Environment env) {
         this.fcmMsgQueryRepository = fcmMsgQueryRepository;
         this.fcmPropsConfig = fcmPropsConfig;
         this.fcmApiService = fcmApiService;
         this.transactionManager = transactionManager;
         this.env = env;
-        this.executor = Executors.newScheduledThreadPool(env.getProperty("db.scrape.thread.pool.size" , Integer.class, 5));
+        this.executor = Executors.newScheduledThreadPool(env.getProperty("db.scrape.thread.pool.size", Integer.class, 5));
 
     }
 
@@ -83,7 +85,7 @@ public class FcmDbPushTask {
                                 log.error("==================================");
                                 log.error("{} :", appName, e);
                                 log.error("==================================");
-                            }  catch (Exception e) {
+                            } catch (Exception e) {
                                 log.error("push db:", e);
                             }
 
@@ -117,18 +119,26 @@ public class FcmDbPushTask {
         }
 
         List<FcmMessage> msgs = targetList.stream().map(vo -> {
-            return FcmMessage.builder().appName(vo.getAppName())
-                             .title(vo.getTitle())
-                             .body(vo.getBody())
-                             .image(vo.getImage())
-                             .token(vo.getFcmToken())
-                             .build();
+            FcmMessage.FcmMessageBuilder builder = FcmMessage.builder()
+                                                             .appName(vo.getAppName())
+                                                             .title(vo.getTitle())
+                                                             .body(vo.getBody())
+                                                             .image(vo.getImage())
+                                                             .token(vo.getFcmToken());
+            if (StringUtils.hasLength(vo.getDeviceType())) {
+                FcmDevice device = EnumFinder.findEnum(vo.getDeviceType(), FcmDevice.class);
+                if (device != null) {
+                    builder.device(device);
+                }
+            }
+            return builder.build();
+
         }).toList();
         // PUSH Results
         List<FailureToken> results = fcmApiService.sendAll(msgs);
         // DB update
         List<FcmMsgEntity> fcmMsgEntities = new ArrayList<>();
-        for (FcmMsgEntity fcmMsgEntity: targetList) {
+        for (FcmMsgEntity fcmMsgEntity : targetList) {
             boolean isFailed = results.stream().anyMatch(vo -> vo.getToken().equals(fcmMsgEntity.getFcmToken()));
             if (isFailed) {
                 fcmMsgEntity.setSuccessYn("N");
