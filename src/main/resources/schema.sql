@@ -1,8 +1,8 @@
-CREATE SCHEMA IF NOT EXISTS fcm_owner;  -- change
+
 
 
 /** h2db **/
-CREATE TABLE IF NOT EXISTS fcm_owner.fcm_msg (
+CREATE TABLE IF NOT EXISTS fcm_msg (
   msg_key VARCHAR(255) NOT NULL,
   msg_seq BIGINT NOT NULL AUTO_INCREMENT,
   app_name VARCHAR(50) NOT NULL,
@@ -18,22 +18,22 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_msg (
   CONSTRAINT fcm_msg_pk  PRIMARY KEY (msg_key, created_at)
 );
 
-CREATE INDEX fcm_msg_ix_01 ON fcm_owner.fcm_msg(msg_seq, app_name, created_at);
-CREATE INDEX fcm_msg_ix_02 ON fcm_owner.fcm_msg(created_at desc, app_name, push_yn);
+CREATE INDEX fcm_msg_ix_01 ON fcm_msg(msg_seq, app_name, created_at);
+CREATE INDEX fcm_msg_ix_02 ON fcm_msg(created_at desc, app_name, push_yn);
 
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('fassafa1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('fadssadfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('asdfads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdasfdasads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdsfeddads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfaee', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('adsfas3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('fads3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
-INSERT INTO fcm_owner.fcm_msg(msg_key, app_name, fcm_token, title, body) values('afda3dsff', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fassafa1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fadssadfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('asdfads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdasfdasads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afdsfeddads1', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfaee', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('adsfas3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('fads3d', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('sdfa', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
+INSERT INTO fcm_msg(msg_key, app_name, fcm_token, title, body) values('afda3dsff', 'ecobridgeapp', 'token-asdfad', 'title-sdfaaf', 'body-sdfads');
 
-CREATE TABLE IF NOT EXISTS fcm_owner.fcm_log (
+CREATE TABLE IF NOT EXISTS fcm_log (
   log_key VARCHAR(255) NOT NULL,
   log_seq BIGINT NOT NULL AUTO_INCREMENT,
   app_name VARCHAR(50) NOT NULL,
@@ -45,10 +45,10 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_log (
 );
 
 
-CREATE INDEX fcm_owner.fcm_log_ix_01 ON fcm_owner.fcm_log(fcm_token);
-CREATE INDEX fcm_owner.fcm_log_ix_02 ON fcm_owner.fcm_log(created_at desc, app_name, success_yn);
+CREATE INDEX fcm_log_ix_01 ON fcm_log(fcm_token);
+CREATE INDEX fcm_log_ix_02 ON fcm_log(created_at desc, app_name, success_yn);
 
-CREATE TABLE IF NOT EXISTS fcm_owner.fcm_set (
+CREATE TABLE IF NOT EXISTS fcm_set (
   app_name VARCHAR(50) NOT NULL,
   key_path VARCHAR(4000) NOT NULL,
   connection_timeout INTEGER DEFAULT 5 NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_set (
   CONSTRAINT fcm_set_pk  PRIMARY KEY (app_name)
 );
 
-CREATE TABLE IF NOT EXISTS fcm_owner.fcm_set (
+CREATE TABLE IF NOT EXISTS fcm_set (
   app_name VARCHAR(50) NOT NULL,
   key_path VARCHAR(4000) NOT NULL,
   connection_timeout INTEGER DEFAULT 3 NOT NULL,

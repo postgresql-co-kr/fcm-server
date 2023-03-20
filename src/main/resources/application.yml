@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: dev
+    default: local
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -39,7 +39,6 @@ spring:
     username: sa
     password:
     hikari:
-      schema: "fcm_owner"  # change
       connection-timeout: 30000
       maximum-pool-size: 2
 
@@ -50,7 +49,6 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        default_schema: "fcm_owner"  # change
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         use_sql_comments: true
