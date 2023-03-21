@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server;
+package com.ecobridge.fcm;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.boot.SpringApplication;

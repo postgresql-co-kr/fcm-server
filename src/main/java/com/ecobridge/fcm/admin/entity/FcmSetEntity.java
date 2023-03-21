@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.entity;
+package com.ecobridge.fcm.admin.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

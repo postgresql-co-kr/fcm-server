@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.config;
+package com.ecobridge.fcm.common.config;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;

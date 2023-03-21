@@ -9,7 +9,7 @@ import com.ecobridge.fcm.server.repository.FcmLogEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmLogQueryRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
-import com.ecobridge.fcm.server.util.URLChecker;
+import com.ecobridge.fcm.common.util.URLChecker;
 import com.ecobridge.fcm.server.vo.FailureToken;
 import com.ecobridge.fcm.server.vo.FcmApp;
 import com.ecobridge.fcm.server.vo.FcmBuilder;

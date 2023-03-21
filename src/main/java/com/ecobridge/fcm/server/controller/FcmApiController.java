@@ -18,7 +18,7 @@ import java.util.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/fcm")
+@RequestMapping("/api/fcm")
 @Timed
 public class FcmApiController {
     private final FcmApiService service;

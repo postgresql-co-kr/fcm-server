@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.util;
+package com.ecobridge.fcm.common.util;
 
 import java.net.URL;
 

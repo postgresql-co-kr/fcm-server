@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.controller;
+package com.ecobridge.fcm.admin.controller;
 
 import com.ecobridge.fcm.server.service.FcmApiService;
 import com.ecobridge.fcm.server.vo.FcmMessage;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 @Timed
-public class FcmAdminController {
+public class AdminController {
     private final FcmApiService service;
 
-    public FcmAdminController(FcmApiService service) {
+    public AdminController(FcmApiService service) {
         this.service = service;
     }
 

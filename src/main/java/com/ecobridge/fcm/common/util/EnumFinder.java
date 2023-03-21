@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.util;
+package com.ecobridge.fcm.common.util;
 
 public class EnumFinder {
     public static <E extends Enum<E>> E findEnum(String enumString, Class<E> enumClass) {

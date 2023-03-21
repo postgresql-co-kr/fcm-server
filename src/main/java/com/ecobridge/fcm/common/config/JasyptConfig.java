@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.config;
+package com.ecobridge.fcm.common.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

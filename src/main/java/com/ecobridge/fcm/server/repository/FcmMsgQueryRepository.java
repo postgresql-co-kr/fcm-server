@@ -1,5 +1,6 @@
 package com.ecobridge.fcm.server.repository;
 
+import com.ecobridge.fcm.common.repository.FcmCommonQueryRepository;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.LockModeType;

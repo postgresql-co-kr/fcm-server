@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.repository;
+package com.ecobridge.fcm.common.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FcmCommonQueryRepository {
     @PersistenceContext
-    EntityManager entityManager;
+    protected EntityManager entityManager;
 
     protected <T> void batchUpdate(List<T> entities) {
         int batchSize = 100;
