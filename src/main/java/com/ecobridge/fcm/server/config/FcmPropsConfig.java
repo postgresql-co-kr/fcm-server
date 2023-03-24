@@ -1,6 +1,6 @@
 package com.ecobridge.fcm.server.config;
 
-import com.ecobridge.fcm.server.vo.FcmApp;
+import com.ecobridge.fcm.server.dto.FcmApp;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

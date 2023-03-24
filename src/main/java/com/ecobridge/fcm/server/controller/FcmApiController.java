@@ -1,9 +1,9 @@
 package com.ecobridge.fcm.server.controller;
 
 import com.ecobridge.fcm.server.service.FcmApiService;
-import com.ecobridge.fcm.server.vo.FailureToken;
-import com.ecobridge.fcm.server.vo.FcmMessage;
-import com.ecobridge.fcm.server.vo.FcmResponse;
+import com.ecobridge.fcm.server.dto.FailureToken;
+import com.ecobridge.fcm.server.dto.FcmMessage;
+import com.ecobridge.fcm.server.dto.FcmResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import io.micrometer.core.annotation.Timed;

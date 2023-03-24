@@ -1,6 +1,6 @@
 package com.ecobridge.fcm.server.config;
 
-import com.ecobridge.fcm.server.vo.FcmApp;
+import com.ecobridge.fcm.server.dto.FcmApp;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;

@@ -6,12 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity(name="fcmSet")
 @Table(name="fcm_set")
 @Data
-public class FcmSetEntity {
+public class FcmSetEntity implements Serializable {
 
     @Id
     @Column(name = "app_name", nullable = false, length = 50)

@@ -1,9 +1,6 @@
 package com.ecobridge.fcm.admin.exception;
 
-import com.ecobridge.fcm.server.exception.FcmBizException;
-import com.ecobridge.fcm.server.exception.InvalidRequestException;
-import com.ecobridge.fcm.server.vo.FcmResponse;
-import com.google.firebase.messaging.FirebaseMessagingException;
+import com.ecobridge.fcm.server.dto.FcmResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

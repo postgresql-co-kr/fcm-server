@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.vo;
+package com.ecobridge.fcm.server.dto;
 
 import com.ecobridge.fcm.server.enums.FcmDevice;
 import lombok.Builder;

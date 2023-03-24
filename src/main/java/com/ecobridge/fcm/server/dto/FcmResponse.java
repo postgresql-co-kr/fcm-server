@@ -1,4 +1,4 @@
-package com.ecobridge.fcm.server.vo;
+package com.ecobridge.fcm.server.dto;
 
 import lombok.Builder;
 import lombok.Data;

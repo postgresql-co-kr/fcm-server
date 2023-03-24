@@ -1,8 +1,8 @@
 package com.ecobridge.fcm.admin.controller;
 
 import com.ecobridge.fcm.server.service.FcmApiService;
-import com.ecobridge.fcm.server.vo.FcmMessage;
-import com.ecobridge.fcm.server.vo.FcmResponse;
+import com.ecobridge.fcm.server.dto.FcmMessage;
+import com.ecobridge.fcm.server.dto.FcmResponse;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;

@@ -15,7 +15,7 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
 
     @Timed(value = "fcm.msg.query.repository.sql.timed")
     public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapeTime) {
-        String sql = """
+        String jpql = """
                 SELECT 
                      m
                 FROM
@@ -29,7 +29,7 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
                 LIMIT 500             
                     """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(
-                sql, FcmMsgEntity.class);
+                jpql, FcmMsgEntity.class);
         query.setParameter("appName", appName);
         query.setParameter("scrapeTime", scrapeTime);
         query.setHint("jakarta.persistence.lock.timeout", 5000);
@@ -39,7 +39,7 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
 
     @Timed(value = "fcm.msg.query.repository.sql.timed")
     public List<FcmMsgEntity> findNextList(String appName, String msgKey) {
-        String sql = """
+        String jpql = """
             SELECT
                 m        
             FROM
@@ -60,7 +60,7 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
             LIMIT 500
                 """;
         TypedQuery<FcmMsgEntity> query = entityManager.createQuery(
-                sql, FcmMsgEntity.class);
+                jpql, FcmMsgEntity.class);
         query.setParameter("appName", appName);
         query.setParameter("msgKey", msgKey);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);

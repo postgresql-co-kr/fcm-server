@@ -1,11 +1,9 @@
-package com.ecobridge.fcm.admin.vo;
+package com.ecobridge.fcm.admin.dto;
 
-import com.ecobridge.fcm.server.vo.FailureToken;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Builder

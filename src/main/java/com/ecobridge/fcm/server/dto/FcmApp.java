@@ -1,9 +1,11 @@
-package com.ecobridge.fcm.server.vo;
+package com.ecobridge.fcm.server.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class FcmApp {
+public class FcmApp implements Serializable {
     private String name;
     private String googleApplicationCredentials;
     private int connectionTimeout = 3;

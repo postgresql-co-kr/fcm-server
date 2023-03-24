@@ -3,12 +3,13 @@ package com.ecobridge.fcm.server.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity(name="fcmMsg")
 @Table(name="fcm_msg")
 @Data
-public class FcmMsgEntity {
+public class FcmMsgEntity implements Serializable {
     @Id
     @Column(name = "msg_key", length = 255, nullable = false)
     private String msgKey;

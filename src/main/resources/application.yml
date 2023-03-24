@@ -21,7 +21,11 @@ management:
 
 jasypt.encryptor.env.name: JASYPT_ENCRYPTOR_PASSWORD
 
-
+security:
+  jwt:
+    secret-key: "KKKKK"
+    expiration-time: 700000
+    refresh-expiration-time: 8888888888
 ---
 spring:
   config:
@@ -59,9 +63,9 @@ fcm-apps:
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 5 # seconds
     read-timeout: 10 # seconds set 10~30
-    db-log: true # fcm send success/fail db log
-    db-push: true  # true: db fcm send
+    db-push: false  # true: db fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
+    db-log: true # fcm send success/fail db log
 
 
 db:
@@ -105,11 +109,11 @@ fcm-apps:
   -
     name: ecobridge
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 5 # seconds
-    read-timeout: 10 # seconds set 10~30
-    db-log: true # fcm send success/fail db log
+    connection-timeout: 5 # firebase connection seconds
+    read-timeout: 10 # firebase read timeout seconds set 10~30
     db-push: true  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
+    db-log: true # fcm send success/fail db log
 
 db:
   schema: "fcm_owner"
@@ -155,9 +159,9 @@ fcm-apps:
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 5 # seconds
     read-timeout: 20 # seconds set 10~30
-    db-log: true # fcm send success/fail db log
     db-push: true  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
+    db-log: true # fcm send success/fail db log
 
 db:
   schema: "fcm_owner"
