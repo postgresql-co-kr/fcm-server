@@ -117,3 +117,36 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_set (
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA fcm_owner TO fcm_app;
+
+CREATE TABLE fcm_owner.users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE ,
+  email VARCHAR(100) NULL,
+  password VARCHAR(100) NOT NULL,
+  last_login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+COMMENT ON TABLE fcm_owner.users IS '회원 정보';
+COMMENT ON COLUMN fcm_owner.users.id IS '참조 사용자 아이디';
+COMMENT ON COLUMN fcm_owner.users.username IS '사용자 이름(아이디)';
+COMMENT ON COLUMN fcm_owner.users.email IS '이메일';
+COMMENT ON COLUMN fcm_owner.users.password IS '비밀번호';
+COMMENT ON COLUMN  fcm_owner.users.last_login_at IS '마지막로그인일';
+COMMENT ON COLUMN  fcm_owner.users.updated_at IS '수정일시';
+COMMENT ON COLUMN  fcm_owner.users.created_at IS '가입일시';
+
+
+CREATE TABLE fcm_owner.user_roles (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL,
+  role_name VARCHAR(20) NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+COMMENT ON TABLE fcm_owner.user_roles IS '회원 Role 정보';
+COMMENT ON COLUMN fcm_owner.user_roles.id IS 'Role 아이디';
+COMMENT ON COLUMN fcm_owner.user_roles.user_id IS '사용자 아이디';
+COMMENT ON COLUMN fcm_owner.user_roles.role_name IS 'Role 이름';
+COMMENT ON COLUMN  fcm_owner.user_roles.updated_at IS '수정일시';
+COMMENT ON COLUMN  fcm_owner.user_roles.created_at IS '가입일시';
