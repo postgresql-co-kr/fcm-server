@@ -2,16 +2,22 @@ package com.ecobridge.fcm.common.entity;
 
 import com.ecobridge.fcm.common.enums.RoleName;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * @author
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "user_roles")
 @Table(name = "user_roles")
-@Data
 public class UserRolesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +26,6 @@ public class UserRolesEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleName roleName;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

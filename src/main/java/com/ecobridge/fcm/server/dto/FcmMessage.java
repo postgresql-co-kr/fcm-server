@@ -1,8 +1,10 @@
 package com.ecobridge.fcm.server.dto;
 
 import com.ecobridge.fcm.server.enums.FcmDevice;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FcmMessage implements Serializable {
     /**
      * 복수건 Token 일때 필수

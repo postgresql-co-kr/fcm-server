@@ -12,18 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(basePackages = "com.ecobridge.fcm.server")
 public class FcmExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<FcmResponse> handleException(Exception e) {
-        log.error("FCM Server Exception:", e);
-        return new ResponseEntity<>(
-                FcmResponse.builder()
-                        .isSuccessful(false)
-                        .errorCode("SERVER_ERROR")
-                        .message("Fcm Server Exception:" + e.getMessage())
-                        .build(), HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
-
 
     @ExceptionHandler(FcmBizException.class)
     protected ResponseEntity<FcmResponse> handleFcmBizException(FcmBizException e) {

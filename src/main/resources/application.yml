@@ -23,9 +23,10 @@ jasypt.encryptor.env.name: JASYPT_ENCRYPTOR_PASSWORD
 
 security:
   jwt:
-    secret-key: "KKKKK"
+    secret-key: ""
     expiration-time: 700000
     refresh-expiration-time: 8888888888
+    refresh-cookie-name: fcm-refresh-token
 ---
 spring:
   config:

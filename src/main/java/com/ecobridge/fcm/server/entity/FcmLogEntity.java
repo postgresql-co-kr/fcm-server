@@ -1,14 +1,19 @@
 package com.ecobridge.fcm.server.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name="fcmLog")
 @Table(name="fcm_log")
-@Data
 public class FcmLogEntity implements Serializable {
 
     @Id

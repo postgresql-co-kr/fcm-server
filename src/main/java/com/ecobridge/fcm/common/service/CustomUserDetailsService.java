@@ -6,6 +6,7 @@ import com.ecobridge.fcm.common.entity.UsersEntity;
 import com.ecobridge.fcm.common.enums.RoleName;
 import com.ecobridge.fcm.common.repository.UserRolesEntityRepository;
 import com.ecobridge.fcm.common.repository.UsersEntityRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,20 +18,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UsersEntityRepository usersEntityRepository;
     private final UserRolesEntityRepository userRolesEntityRepository;
 
-    public CustomUserDetailsService(UsersEntityRepository usersEntityRepository, UserRolesEntityRepository userRolesEntityRepository) {
-        this.usersEntityRepository = usersEntityRepository;
-        this.userRolesEntityRepository = userRolesEntityRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UsersEntity user = usersEntityRepository.findByUsername(username)
-                                                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                          .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
         List<UserRolesEntity> roles = userRolesEntityRepository.findByUserId(user.getId())
                                                                .orElse(Collections.EMPTY_LIST);
 

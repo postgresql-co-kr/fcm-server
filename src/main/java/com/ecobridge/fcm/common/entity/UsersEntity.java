@@ -1,14 +1,21 @@
 package com.ecobridge.fcm.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "users")
 @Table(name = "users")
-@Data
 public class UsersEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;  // 참조 사용자 ID
@@ -18,8 +25,8 @@ public class UsersEntity {
     private String password;
     @Column(nullable = true)
     private String email;
-    private Timestamp lastLoginAt; //마지막 로그인 일시
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDateTime lastLoginAt; //마지막 로그인 일시
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

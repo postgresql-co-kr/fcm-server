@@ -15,6 +15,7 @@ PostgreSQL에서는 psql 쉘에서 다양한 유용한 명령어를 사용할 �
 
 /* postgresql */
 
+
 CREATE SCHEMA IF NOT EXISTS fcm_owner;  -- change
 
 CREATE USER fcm_owner WITH PASSWORD 'password'; -- change
@@ -27,10 +28,12 @@ CREATE DATABASE fcm_db
        TEMPLATE = template0;
 
 
+
 CREATE USER fcm_app WITH PASSWORD 'password'; -- change
 GRANT CONNECT ON DATABASE fcm_db TO fcm_owner;
 GRANT CONNECT ON DATABASE fcm_db TO fcm_app;
 GRANT USAGE ON SCHEMA fcm_owner TO fcm_app;
+
 
 CREATE TABLE IF NOT EXISTS fcm_owner.fcm_msg (
   msg_key VARCHAR(255) NOT NULL,
@@ -47,7 +50,6 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_msg (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   CONSTRAINT fcm_msg_pk  PRIMARY KEY (msg_key, created_at)
 ) PARTITION BY RANGE (created_at);
-
 
 CREATE OR REPLACE PROCEDURE fcm_owner.create_fcm_msg_partitions(start_date DATE, end_date DATE) LANGUAGE plpgsql AS $$
 DECLARE
@@ -118,8 +120,8 @@ CREATE TABLE IF NOT EXISTS fcm_owner.fcm_set (
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA fcm_owner TO fcm_app;
 
-CREATE TABLE fcm_owner.users (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS fcm_owner.users (
+  id SERIAL NOT NULL PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE ,
   email VARCHAR(100) NULL,
   password VARCHAR(100) NOT NULL,
@@ -127,6 +129,9 @@ CREATE TABLE fcm_owner.users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX ON fcm_owner.users(email);
+
 COMMENT ON TABLE fcm_owner.users IS '회원 정보';
 COMMENT ON COLUMN fcm_owner.users.id IS '참조 사용자 아이디';
 COMMENT ON COLUMN fcm_owner.users.username IS '사용자 이름(아이디)';
@@ -136,14 +141,15 @@ COMMENT ON COLUMN  fcm_owner.users.last_login_at IS '마지막로그인일';
 COMMENT ON COLUMN  fcm_owner.users.updated_at IS '수정일시';
 COMMENT ON COLUMN  fcm_owner.users.created_at IS '가입일시';
 
-
-CREATE TABLE fcm_owner.user_roles (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS fcm_owner.user_roles (
+  id SERIAL NOT NULL PRIMARY KEY,
   user_id INT NOT NULL,
   role_name VARCHAR(20) NOT NULL,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX ON fcm_owner.user_roles(user_id);
+
 COMMENT ON TABLE fcm_owner.user_roles IS '회원 Role 정보';
 COMMENT ON COLUMN fcm_owner.user_roles.id IS 'Role 아이디';
 COMMENT ON COLUMN fcm_owner.user_roles.user_id IS '사용자 아이디';
