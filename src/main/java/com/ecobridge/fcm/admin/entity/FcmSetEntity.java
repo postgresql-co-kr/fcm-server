@@ -8,9 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -40,10 +42,12 @@ public class FcmSetEntity implements Serializable {
     private String dbMinusTime = "5m";
     @Column(name = "update_id", nullable = false, length = 255)
     private String updateId;
+    @UpdateTimestamp
     @Column(name = "update_at", nullable = false)
-    private Timestamp updateAt;
+    private LocalDateTime updateAt;
     @Column(name = "created_id", nullable = false, length = 255)
     private String createdId;
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 }
