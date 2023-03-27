@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: local
+    default: dev
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -105,13 +105,14 @@ spring:
         show_sql: true
         use_sql_comments: true
 
+
 fcm-apps:
   -
     name: ecobridge
     google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
     connection-timeout: 5 # firebase connection seconds
     read-timeout: 10 # firebase read timeout seconds set 10~30
-    db-push: true  # true: db insert fcm send
+    db-push: false  # true: db insert fcm send
     db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
     db-log: true # fcm send success/fail db log
 

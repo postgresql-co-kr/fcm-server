@@ -1,16 +1,16 @@
 package com.ecobridge.fcm.server.task;
 
+import com.ecobridge.fcm.common.util.EnumFinder;
+import com.ecobridge.fcm.common.util.IntervalParser;
 import com.ecobridge.fcm.server.config.FcmPropsConfig;
+import com.ecobridge.fcm.server.dto.FailureToken;
+import com.ecobridge.fcm.server.dto.FcmApp;
+import com.ecobridge.fcm.server.dto.FcmMessage;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import com.ecobridge.fcm.server.enums.FcmDevice;
 import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.service.FcmApiService;
-import com.ecobridge.fcm.common.util.EnumFinder;
-import com.ecobridge.fcm.common.util.IntervalParser;
-import com.ecobridge.fcm.server.dto.FailureToken;
-import com.ecobridge.fcm.server.dto.FcmApp;
-import com.ecobridge.fcm.server.dto.FcmMessage;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -23,7 +23,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.StringUtils;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,8 +106,7 @@ public class FcmDbPushTask {
     }
 
     private void pushFcmFromDb(String appName, long minusSeconds) throws FirebaseMessagingException {
-        Timestamp scrapTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(minusSeconds));
-        List<FcmMsgEntity> targetList = fcmMsgQueryRepository.findTargetList(appName, scrapTime);
+        List<FcmMsgEntity> targetList = fcmMsgQueryRepository.findTargetList(appName, LocalDateTime.now().minusSeconds(minusSeconds));
         send(targetList);
     }
 
@@ -145,7 +143,7 @@ public class FcmDbPushTask {
             } else {
                 fcmMsgEntity.setSuccessYn("Y");
             }
-            fcmMsgEntity.setPushTime(Timestamp.valueOf(LocalDateTime.now()));
+            fcmMsgEntity.setPushTime(LocalDateTime.now());
             fcmMsgEntity.setPushYn("Y");
             fcmMsgEntities.add(fcmMsgEntity); // add list
         }

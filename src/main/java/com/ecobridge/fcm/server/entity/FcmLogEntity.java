@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,11 +19,11 @@ import java.sql.Timestamp;
 public class FcmLogEntity implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "log_key", length = 255, nullable = false)
     private String logKey;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "log_seq", nullable = false)
+    @Column(name = "log_seq", insertable = false)
     private Long logSeq;
 
     @Column(name = "app_name", nullable = false, length = 50)
@@ -36,6 +38,7 @@ public class FcmLogEntity implements Serializable {
     @Column(name = "success_yn", nullable = false, length = 1)
     private String successYn = "N";
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 }

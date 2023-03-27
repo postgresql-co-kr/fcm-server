@@ -7,14 +7,14 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
 
     @Timed(value = "fcm.msg.query.repository.sql.timed")
-    public List<FcmMsgEntity> findTargetList(String appName, Timestamp scrapeTime) {
+    public List<FcmMsgEntity> findTargetList(String appName, LocalDateTime scrapeTime) {
         String jpql = """
                 SELECT 
                      m
@@ -53,8 +53,9 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
                         fcmMsg s
                     WHERE
                         s.msgKey = :msgKey
+                        AND s.appName = :appName
                 )
-                AND m.sendYn = 'N'
+                AND m.successYn = 'N'
             ORDER BY
                 m.msgSeq desc
             LIMIT 500
@@ -63,6 +64,7 @@ public class FcmMsgQueryRepository extends FcmCommonQueryRepository {
                 jpql, FcmMsgEntity.class);
         query.setParameter("appName", appName);
         query.setParameter("msgKey", msgKey);
+        query.setHint("jakarta.persistence.lock.timeout", 5000);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
         return query.getResultList();
     }

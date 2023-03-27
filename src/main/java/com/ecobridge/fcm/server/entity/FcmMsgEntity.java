@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -45,11 +47,12 @@ public class FcmMsgEntity implements Serializable {
     private String pushYn = "N";
 
     @Column(name = "push_time", nullable = true)
-    private Timestamp pushTime;
+    private LocalDateTime pushTime;
 
     @Column(name = "success_yn", nullable = false, length = 1)
     private String successYn = "N";
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 }

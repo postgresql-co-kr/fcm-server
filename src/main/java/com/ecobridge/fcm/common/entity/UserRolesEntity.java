@@ -16,12 +16,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user_roles")
+@Entity(name = "userRoles")
 @Table(name = "user_roles")
 public class UserRolesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String userId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
