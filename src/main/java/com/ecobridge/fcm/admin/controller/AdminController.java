@@ -1,9 +1,8 @@
 package com.ecobridge.fcm.admin.controller;
 
-import com.ecobridge.fcm.server.service.FcmApiService;
 import com.ecobridge.fcm.server.dto.FcmMessage;
 import com.ecobridge.fcm.server.dto.FcmResponse;
-import com.google.firebase.messaging.FirebaseMessagingException;
+import com.ecobridge.fcm.server.service.FcmApiService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +20,10 @@ public class AdminController {
     private final FcmApiService service;
 
     @PostMapping("/set/fcm")
-    public FcmResponse setFcm(@RequestBody FcmMessage msg) throws FirebaseMessagingException {
+    public FcmResponse setFcm(@RequestBody FcmMessage msg)  {
         log.debug("/set/fcm request body: {}", msg);
-
         return FcmResponse.builder()
                           .isSuccessful(true)
                           .build();
     }
-
 }

@@ -1,6 +1,8 @@
 package com.ecobridge.fcm.common.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorResponse {
+    @NotNull
     private int status;
+    @NotBlank
     private String message;
     private String path;
     @Builder.Default
