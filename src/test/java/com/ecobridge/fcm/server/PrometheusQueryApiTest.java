@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 @SpringBootTest
 @ActiveProfiles("dev")
 @Slf4j
-public class prometheusQueryApiTest {
+public class PrometheusQueryApiTest {
 
     @Autowired
     Environment env;

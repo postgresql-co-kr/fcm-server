@@ -16,13 +16,21 @@ services:
         ipv4_address: 172.30.0.3
       backend_network: null
 
-
   prometheus:
     image: prom/prometheus:latest
     restart: always
     container_name: prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./volumes/prometheus:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=90d # 90일보다 오래된 metrics는 삭제
+      - --storage.tsdb.retention.size=10GB # 10GB를 넘을 시 오래된 metrics 삭제
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/proemtheus/consoles
+      - --web.enable-admin-api
     ports:
       - 9090:9090
     networks:
