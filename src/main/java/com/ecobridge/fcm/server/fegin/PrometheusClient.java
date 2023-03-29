@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "prometheus", url = "${prometheus.api.url}")
+@FeignClient(name = "prometheus")
 public interface PrometheusClient {
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/query_range")
     String queryRange(@RequestParam("query") String query,

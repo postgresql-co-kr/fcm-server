@@ -1,5 +1,8 @@
 package com.ecobridge.fcm.server;
 
+import com.ecobridge.fcm.common.dto.PrometheusQueryRangeResponse;
+import com.ecobridge.fcm.common.util.DateTimeUtil;
+import com.ecobridge.fcm.common.util.PrometheusQueryRangeResponseParser;
 import com.ecobridge.fcm.server.fegin.PrometheusClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -8,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.io.IOException;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 @SpringBootTest
@@ -23,37 +26,29 @@ public class PrometheusQueryApiTest {
     private PrometheusClient prometheusClient;
 
     @Test
-    void queryApiTest() {
+    void queryApiTest() throws IOException {
         String metricName = "http_server_requests_seconds_count";
         int days = 10;
 
         String result = getMetricValue(metricName, days);
-        log.debug("{}", result);
-
+        PrometheusQueryRangeResponseParser parser = new PrometheusQueryRangeResponseParser();
+        PrometheusQueryRangeResponse response = parser.parse(result);
+        log.debug("{}", response);
+        long timestamp = Long.valueOf(response.getData().getResults().get(0).getValues().get(0).get(0).toString());
+        log.debug(DateTimeUtil.fromTimestamp(timestamp * 1000).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
-
-    public String getPrometheusDatetime(LocalDateTime datetime) {
-
-        ZoneOffset zoneOffset = ZoneOffset.UTC;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String prometheusDatetime = datetime.atOffset(zoneOffset).format(formatter);
-        System.out.println(prometheusDatetime);
-        return prometheusDatetime;
-    }
 
     public String getMetricValue(String metricName, int days) {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.minusDays(days);
-        String startTime = getPrometheusDatetime(start);
-        String endTime = getPrometheusDatetime(now);
+        String startTime = DateTimeUtil.ofPrometheusDatetime(start);
+        String endTime = DateTimeUtil.ofPrometheusDatetime(now);
 
         String query = String.format(
                 "increase(%s{uri=\"/api/v1/fcm/hello\"}[1d])",
-                metricName,
-                days
+                metricName
         );
 
 
