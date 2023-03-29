@@ -10,12 +10,12 @@ public class DateTimeUtil {
     public static String ofPrometheusDatetime(LocalDateTime datetime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         ZonedDateTime zonedDateTime = ZonedDateTime.of(datetime, ZoneOffset.systemDefault());
-        String prometheusDatetime = zonedDateTime.withZoneSameInstant(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        String prometheusDatetime = zonedDateTime.withZoneSameInstant(ZoneOffset.UTC).format(formatter);
         log.debug("prometheusDatetime: {}", prometheusDatetime);
         return prometheusDatetime;
     }
 
-    public static LocalDateTime fromTimestamp(long timestamp) {
+    public static LocalDateTime ofPrometheusTimestamp(long timestamp) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneOffset.systemDefault());
     }
 }

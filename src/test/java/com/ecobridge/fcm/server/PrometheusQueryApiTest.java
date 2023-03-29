@@ -12,7 +12,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @SpringBootTest
@@ -27,7 +27,7 @@ public class PrometheusQueryApiTest {
 
     @Test
     void queryApiTest() throws IOException {
-        String metricName = "http_server_requests_seconds_count";
+        String metricName = "fcm_fcm_api_controller_timed_seconds_count";
         int days = 10;
 
         String result = getMetricValue(metricName, days);
@@ -35,7 +35,8 @@ public class PrometheusQueryApiTest {
         PrometheusQueryRangeResponse response = parser.parse(result);
         log.debug("{}", response);
         long timestamp = Long.valueOf(response.getData().getResults().get(0).getValues().get(0).get(0));
-        log.debug(DateTimeUtil.fromTimestamp(timestamp * 1000).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        log.debug(DateTimeUtil.ofPrometheusTimestamp(timestamp * 1000).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        log.debug(DateTimeUtil.ofPrometheusTimestamp(1680069625966L).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
 
@@ -47,7 +48,7 @@ public class PrometheusQueryApiTest {
         String endTime = DateTimeUtil.ofPrometheusDatetime(now);
 
         String query = String.format(
-                "increase(%s{uri=\"/api/v1/fcm/hello\"}[1d])",
+                "increase(%s{method=\"hello\"}[1d])",
                 metricName
         );
 
