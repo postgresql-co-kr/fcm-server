@@ -34,7 +34,7 @@ public class PrometheusQueryApiTest {
         PrometheusQueryRangeResponseParser parser = new PrometheusQueryRangeResponseParser();
         PrometheusQueryRangeResponse response = parser.parse(result);
         log.debug("{}", response);
-        long timestamp = Long.valueOf(response.getData().getResults().get(0).getValues().get(0).get(0).toString());
+        long timestamp = Long.valueOf(response.getData().getResults().get(0).getValues().get(0).get(0));
         log.debug(DateTimeUtil.fromTimestamp(timestamp * 1000).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 

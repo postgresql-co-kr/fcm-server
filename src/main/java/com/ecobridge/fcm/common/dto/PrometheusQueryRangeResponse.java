@@ -32,7 +32,7 @@ public class PrometheusQueryRangeResponse {
         private Map<String, Object> metric;
 
         @JsonProperty("values")
-        private List<List<Object>> values;
+        private List<List<String>> values;
 
     }
 }
