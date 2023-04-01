@@ -53,17 +53,18 @@ spring:
       repositories:
         bootstrap-mode: lazy
   # end/> only local develop settings
+    redis:
+      host: localhost
+      port: 6379
+      password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
+      database: 0
 
   h2:
     console:
       enabled: true
       path: /h2-console
 
-  redis:
-    host: localhost
-    port: 6379
-    password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
-    database: 0
+
 
   datasource:
     driverClassName: org.h2.Driver
@@ -126,11 +127,12 @@ spring:
         - dev
   pid.file: "./application.pid"
 
-  redis:
-    host: localhost
-    port: 6379
-    password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
-    database: 0
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
+      database: 0
 
   datasource:
     url: ENC(M3W/gAngWlI6P2k24bJ1IrnRNRw2rOcb3UMV4UDMacrqZFm1AZQQRLSyzNfhrYKin2wbsT1Btzr2qnp+AEVxUNq9g/pNnBXk5cOHr3uh4TU=)
@@ -194,11 +196,12 @@ spring:
         - prod
   pid.file: "./application.pid"
 
-  redis:
-    host: localhost
-    port: 6379
-    password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
-    database: 0
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ENC(atkBOs3snzhPxbb68g7T6oRz6BYcSd82H60T2UwxAfdZnyd559K4ZPgyxzD+0fgj)
+      database: 0
 
   datasource:
     url: ENC(DfolngJOvmVHdU6JsObUg2mtU0+kcbcjYBaWv6C7jkozTWiIGYADxy3QtqwXxzU7HVAq495iqM6KsuMJsI5L3AhRLmG6wa6n8IhIF4gs0bs=)

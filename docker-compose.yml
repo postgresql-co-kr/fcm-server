@@ -27,6 +27,7 @@ services:
       - REDIS_DB=0
     volumes:
       - ./volumes/redis-data:/data
+      - ./volumes/redis.conf:/etc/redis/redis.conf
     networks:
       database_network:
         ipv4_address: 172.30.0.4
