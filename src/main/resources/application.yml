@@ -6,8 +6,12 @@ spring:
     default: dev
   jmx:
     enabled: false
+  data:
+    redis:
+      repositories:
+        enabled: false
   jackson.default-property-inclusion: non_null
-  devtools.livereload.enable: true
+  devtools.livereload.enable: false
 
 management:
   server:
@@ -41,14 +45,15 @@ spring:
       on-profile:
         - local
   pid.file: ./application.pid
-  # start> only develop settings
+  # start> only local develop settings
   main:
     lazy-initialization: true
   data:
     jpa:
       repositories:
         bootstrap-mode: lazy
-  # end/> only develop settings
+  # end/> only local develop settings
+
   h2:
     console:
       enabled: true
