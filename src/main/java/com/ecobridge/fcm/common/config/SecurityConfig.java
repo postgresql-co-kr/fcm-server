@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/alerts").permitAll()
                         .requestMatchers("/api/v1/fcm/**").permitAll()
                         .requestMatchers("/fcm/actuator/**").permitAll()
                         .requestMatchers("/h2-console").permitAll()
