@@ -4,6 +4,8 @@ server:
 spring:
   profiles:
     default: dev
+  jmx:
+    enabled: false
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: true
 
@@ -39,6 +41,14 @@ spring:
       on-profile:
         - local
   pid.file: ./application.pid
+  # start> only develop settings
+  main:
+    lazy-initialization: true
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: lazy
+  # end/> only develop settings
   h2:
     console:
       enabled: true
@@ -76,6 +86,7 @@ spring:
             connectTimeout: 5000
             readTimeout: 5000
             loggerLevel: basic
+
 
 
 fcm-apps:
