@@ -8,12 +8,28 @@ services:
     environment:
       POSTGRES_PASSWORD: pgadm
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./volumes/pgdata:/var/lib/postgresql/data
     networks:
       database_network:
         ipv4_address: 172.30.0.3
+      backend_network: null
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=password
+      - REDIS_DB=0
+    volumes:
+      - ./volumes/redis-data:/data
+    networks:
+      database_network:
+        ipv4_address: 172.30.0.4
       backend_network: null
 
   prometheus:
@@ -32,7 +48,7 @@ services:
       - --web.console.templates=/usr/share/proemtheus/consoles
       - --web.enable-admin-api
     ports:
-      - 9090:9090
+      - "9090:9090"
     networks:
       backend_network:
         ipv4_address: 172.20.0.3
@@ -43,7 +59,7 @@ services:
     restart: always
     container_name: grafana
     ports:
-      - 3010:3000
+      - "3010:3000"
     volumes:
       - ./volumes/grafana:/var/lib/grafana
     environment:

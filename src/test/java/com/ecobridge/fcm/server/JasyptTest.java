@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("dev")
 @TestPropertySource(locations="classpath:test.properties")
 public class JasyptTest  {
 
@@ -19,7 +19,7 @@ public class JasyptTest  {
        
         System.out.println(jasyptService.encrypt("jdbc:postgresql://localhost:5432/fcm_db"));
         System.out.println(jasyptService.encrypt("fcm_app"));
-        System.out.println(jasyptService.encrypt("fcm_app123#@!"));
+        System.out.println(jasyptService.encrypt("password"));
 
 
     }
