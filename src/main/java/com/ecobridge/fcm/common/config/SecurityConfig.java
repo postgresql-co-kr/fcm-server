@@ -74,13 +74,13 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/**/auth/**").permitAll()
-                        .requestMatchers("/**/alerts").permitAll()  // Grafana Alert
-                        .requestMatchers("/**/fcm/**").permitAll()
+                        .requestMatchers("/*/auth/**").permitAll()
+                        .requestMatchers("/*/alerts").permitAll()  // Grafana Alert
+                        .requestMatchers("/*/fcm/**").permitAll()
                         .requestMatchers("/fcm/actuator/**").permitAll()
                         .requestMatchers("/h2-console").permitAll()
-                        .requestMatchers("/**/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/**/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/*/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/*/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement((sm) -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((eh) -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint))
