@@ -15,6 +15,7 @@
  */
 package com.ecobridge.fcm.common.controller;
 
+import com.ecobridge.fcm.common.config.FcmPropsConfig;
 import com.ecobridge.fcm.common.config.JwtTokenUtil;
 import com.ecobridge.fcm.common.dto.JwtTokenResponse;
 import com.ecobridge.fcm.common.dto.MessageResponse;
@@ -52,7 +53,7 @@ public class AuthController {
     private final UserRolesEntityRepository userRolesEntityRepository;
     public final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-
+    private final FcmPropsConfig fcmPropsConfig;
     @GetMapping("/hello")
     public String hello() {
         return "Hello Auth";
@@ -92,7 +93,7 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setAttribute("SameSite", "None");
-        // cookie.setSecure(false);
+        cookie.setSecure(fcmPropsConfig.isCookieHttps()); // https
         response.addCookie(cookie);
         return ResponseEntity.ok(new JwtTokenResponse(token));
     }

@@ -27,7 +27,6 @@ import com.ecobridge.fcm.server.service.FcmApiService;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -58,9 +57,8 @@ public class FcmDbPushTask {
     private final FcmApiService fcmApiService;
 
     private final PlatformTransactionManager transactionManager;
-    private final Environment env;
 
-    private ScheduledExecutorService executor;
+    private final ScheduledExecutorService executor;
     private Map<String, Future<?>> futures = new HashMap<>();
 
 

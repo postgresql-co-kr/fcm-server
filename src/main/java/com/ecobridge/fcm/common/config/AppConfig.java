@@ -17,14 +17,23 @@ package com.ecobridge.fcm.common.config;
 
 import feign.micrometer.MicrometerCapability;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 @Configuration
+@RequiredArgsConstructor
 public class AppConfig {
+    private final FcmPropsConfig fcmPropsConfig;
     @Bean
     public MicrometerCapability micrometerCapability(MeterRegistry meterRegistry) {
         return new MicrometerCapability(meterRegistry);
     }
-
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(fcmPropsConfig.getDbScrape().getThreadPoolSize());
+    }
 }

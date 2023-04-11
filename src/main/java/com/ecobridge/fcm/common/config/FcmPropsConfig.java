@@ -37,6 +37,8 @@ public class FcmPropsConfig {
 
     private DbScrape dbScrape;
 
+    private boolean cookieHttps;
+
     @Data
     @Builder
     @NoArgsConstructor

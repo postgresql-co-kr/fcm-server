@@ -25,37 +25,6 @@ management:
       exposure:
         include: "health,metrics,prometheus"
 
-jasypt.encryptor.env.name: JASYPT_ENCRYPTOR_PASSWORD
-
-security:
-  jwt:
-    secret-key: ""
-    expiration-time: 700000
-    refresh-expiration-time: 8888888888
-    refresh-cookie-name: fcm-refresh-token
-
-
-fcm:
-  cors-origins: >
-    http://localhost:3000,
-    http://127.0.0.1:3000
-  secret-key: "test"
-  jwt:
-    expiration-time: 700000
-    refresh-expiration-time: 8888888888
-    refresh-cookie-name: fcm-refresh-token
-  apps:
-    -
-      name: ecobridge
-      google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-      connection-timeout: 5 # seconds
-      read-timeout: 10 # seconds set 10~30
-      db-push: false  # true: db fcm send
-      db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
-      db-log: true # fcm send success/fail db log
-  db-scrape:
-    scheduled-fixed-rate: 5000 # ms  scheduled time
-    thread-pool-size: 2
 
 ---
 spring:
@@ -127,7 +96,8 @@ fcm:
   cors-origins: >
     http://localhost:3000,
     http://127.0.0.1:3000
-  secret-key: "test"
+  cookie-https: false
+  secret-key: ${FCM_SECRET_KEY}
   jwt:
     expiration-time: 700000
     refresh-expiration-time: 8888888888
@@ -204,7 +174,8 @@ fcm:
   cors-origins: >
     http://localhost:3000,
     http://127.0.0.1:3000
-  secret-key: "test"
+  cookie-https: false
+  secret-key: ${FCM_SECRET_KEY}
   jwt:
     expiration-time: 700000
     refresh-expiration-time: 8888888888
@@ -220,7 +191,7 @@ fcm:
       db-log: true # fcm send success/fail db log
   db-scrape:
     scheduled-fixed-rate: 5000 # ms  scheduled time
-    thread-pool-size: 2
+    thread-pool-size: 4
 ---
 spring:
   config:
@@ -228,8 +199,6 @@ spring:
       on-profile:
         - prod
   pid.file: "./application.pid"
-
-
 
   data:
     redis:
@@ -279,7 +248,8 @@ fcm:
   cors-origins: >
     http://localhost:3000,
     http://127.0.0.1:3000
-  secret-key: "test"
+  cookie-https: true
+  secret-key: ${FCM_SECRET_KEY}
   jwt:
     expiration-time: 700000
     refresh-expiration-time: 8888888888
@@ -295,4 +265,4 @@ fcm:
       db-log: true # fcm send success/fail db log
   db-scrape:
     scheduled-fixed-rate: 5000 # ms  scheduled time
-    thread-pool-size: 2
+    thread-pool-size: 8
