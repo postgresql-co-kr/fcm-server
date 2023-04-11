@@ -86,6 +86,15 @@ public class JwtTokenUtil {
         return !isTokenExpired(refreshToken);
     }
 
+    public String refreshToken(String refreshToken) {
+        final Claims claims = getAllClaimsFromToken(refreshToken);
+        claims.setIssuedAt(new Date());
+        claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt().getExpirationTime() * 1000));
+        return Jwts.builder()
+                   .setClaims(claims)
+                   .signWith(SignatureAlgorithm.HS512, fcmPropsConfig.getSecretKey())
+                   .compact();
+    }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
