@@ -123,28 +123,27 @@ spring:
             readTimeout: 5000
             loggerLevel: basic
 
-fcm-cors-origins: >
-  http://localhost:3000,
-  http://127.0.0.1:3000
-
-
-fcm-apps:
-  -
-    name: ecobridge
-    google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 5 # seconds
-    read-timeout: 10 # seconds set 10~30
-    db-push: false  # true: db fcm send
-    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
-    db-log: true # fcm send success/fail db log
-
-db:
-  scheduled:
-    fixed-rate: 5000 # ms  scheduled time
-  scrape:
-    thread:
-      pool:
-        size: 2
+fcm:
+  cors-origins: >
+    http://localhost:3000,
+    http://127.0.0.1:3000
+  secret-key: "test"
+  jwt:
+    expiration-time: 700000
+    refresh-expiration-time: 8888888888
+    refresh-cookie-name: fcm-refresh-token
+  apps:
+    -
+      name: ecobridge
+      google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
+      connection-timeout: 5 # seconds
+      read-timeout: 10 # seconds set 10~30
+      db-push: false  # true: db fcm send
+      db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
+      db-log: true # fcm send success/fail db log
+  db-scrape:
+    scheduled-fixed-rate: 5000 # ms  scheduled time
+    thread-pool-size: 2
 ---
 spring:
   config:
@@ -201,28 +200,27 @@ spring:
             readTimeout: 5000
             loggerLevel: basic
 
-fcm-cors-origins: >
+fcm:
+  cors-origins: >
     http://localhost:3000,
     http://127.0.0.1:3000
-
-fcm-apps:
-  -
-    name: ecobridge
-    google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 5 # firebase connection seconds
-    read-timeout: 10 # firebase read timeout seconds set 10~30
-    db-push: false  # true: db insert fcm send
-    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
-    db-log: true # fcm send success/fail db log
-
-db:
-  schema: "fcm_owner"
-  scheduled:
-    fixed-rate: 5000 # ms  scheduled time
-  scrape:
-    thread:
-      pool:
-        size: 5
+  secret-key: "test"
+  jwt:
+    expiration-time: 700000
+    refresh-expiration-time: 8888888888
+    refresh-cookie-name: fcm-refresh-token
+  apps:
+    -
+      name: ecobridge
+      google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
+      connection-timeout: 5 # seconds
+      read-timeout: 10 # seconds set 10~30
+      db-push: false  # true: db fcm send
+      db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
+      db-log: true # fcm send success/fail db log
+  db-scrape:
+    scheduled-fixed-rate: 5000 # ms  scheduled time
+    thread-pool-size: 2
 ---
 spring:
   config:
@@ -277,25 +275,24 @@ spring:
             readTimeout: 5000
             loggerLevel: basic
 
-fcm-cors-origins: >
-  http://localhost:3000,
-  http://127.0.0.1:3000
-
-fcm-apps:
-  -
-    name: ecobridge
-    google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
-    connection-timeout: 5 # seconds
-    read-timeout: 20 # seconds set 10~30
-    db-push: true  # true: db insert fcm send
-    db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours  => row created_time >=  now() - (minus time)
-    db-log: true # fcm send success/fail db log
-
-db:
-  schema: "fcm_owner"
-  scheduled:
-    fixed-rate: 5000 # ms  scheduled time
-  scrape:
-    thread:
-      pool:
-        size: 10
+fcm:
+  cors-origins: >
+    http://localhost:3000,
+    http://127.0.0.1:3000
+  secret-key: "test"
+  jwt:
+    expiration-time: 700000
+    refresh-expiration-time: 8888888888
+    refresh-cookie-name: fcm-refresh-token
+  apps:
+    -
+      name: ecobridge
+      google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
+      connection-timeout: 5 # seconds
+      read-timeout: 10 # seconds set 10~30
+      db-push: false  # true: db fcm send
+      db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
+      db-log: true # fcm send success/fail db log
+  db-scrape:
+    scheduled-fixed-rate: 5000 # ms  scheduled time
+    thread-pool-size: 2

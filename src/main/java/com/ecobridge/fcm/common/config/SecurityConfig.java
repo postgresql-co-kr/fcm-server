@@ -20,7 +20,6 @@ import com.ecobridge.fcm.common.filter.JwtAuthenticationTokenFilter;
 import com.ecobridge.fcm.common.service.CustomUserDetailsService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,9 +42,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${security.jwt.refresh-cookie-name}")
-    private String refreshCookieName;
 
+    private final FcmPropsConfig fcmPropsConfig;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
@@ -87,7 +85,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> {
-                    logout.deleteCookies(refreshCookieName)
+                    logout.deleteCookies(fcmPropsConfig.getJwt().getRefreshCookieName())
                           .logoutUrl("/api/*/auth/logout")
                           .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                     ;
