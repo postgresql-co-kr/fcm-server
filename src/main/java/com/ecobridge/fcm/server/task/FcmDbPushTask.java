@@ -15,18 +15,17 @@
  */
 package com.ecobridge.fcm.server.task;
 
+import com.ecobridge.fcm.common.config.FcmPropsConfig;
 import com.ecobridge.fcm.common.util.EnumFinder;
 import com.ecobridge.fcm.common.util.IntervalParser;
-import com.ecobridge.fcm.server.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.dto.FailureToken;
-import com.ecobridge.fcm.server.dto.FcmApp;
 import com.ecobridge.fcm.server.dto.FcmMessage;
 import com.ecobridge.fcm.server.entity.FcmMsgEntity;
 import com.ecobridge.fcm.server.enums.FcmDevice;
-import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.server.service.FcmApiService;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -43,11 +42,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Service
 @Slf4j
 @EnableScheduling
+@RequiredArgsConstructor
 public class FcmDbPushTask {
 
     private final FcmMsgQueryRepository fcmMsgQueryRepository;
@@ -60,21 +63,12 @@ public class FcmDbPushTask {
     private ScheduledExecutorService executor;
     private Map<String, Future<?>> futures = new HashMap<>();
 
-    public FcmDbPushTask(FcmMsgQueryRepository fcmMsgQueryRepository, FcmPropsConfig fcmPropsConfig, FcmApiService fcmApiService, FcmMsgEntityRepository fcmMsgEntityRepository, PlatformTransactionManager transactionManager, Environment env) {
-        this.fcmMsgQueryRepository = fcmMsgQueryRepository;
-        this.fcmPropsConfig = fcmPropsConfig;
-        this.fcmApiService = fcmApiService;
-        this.transactionManager = transactionManager;
-        this.env = env;
-        this.executor = Executors.newScheduledThreadPool(env.getProperty("db.scrape.thread.pool.size", Integer.class, 5));
 
-    }
-
-    @Scheduled(fixedRateString = "${db.scheduled.fixed-rate:5000}")
+    @Scheduled(fixedRateString = "${fcm.db-scrape.scheduled-fixed-rate:5000}")
     public void scheduleFcmFromDb() throws ExecutionException, InterruptedException {
-        List<FcmApp> fcmApps = fcmPropsConfig.getFcmApps();
+        List<FcmPropsConfig.FcmApp> fcmApps = fcmPropsConfig.getApps();
 
-        for (FcmApp fcmApp : fcmApps) {
+        for (FcmPropsConfig.FcmApp fcmApp : fcmApps) {
 
             if (!fcmApp.isDbPush()) { // DB push false
                 continue;

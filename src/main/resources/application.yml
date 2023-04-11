@@ -35,8 +35,27 @@ security:
     refresh-cookie-name: fcm-refresh-token
 
 
-
-
+fcm:
+  cors-origins: >
+    http://localhost:3000,
+    http://127.0.0.1:3000
+  secret-key: "test"
+  jwt:
+    expiration-time: 700000
+    refresh-expiration-time: 8888888888
+    refresh-cookie-name: fcm-refresh-token
+  apps:
+    -
+      name: ecobridge
+      google-application-credentials: ./keys/serviceAccountKey-ecobridge.json
+      connection-timeout: 5 # seconds
+      read-timeout: 10 # seconds set 10~30
+      db-push: false  # true: db fcm send
+      db-minus-time: 5m  # 5s 5 seconds , 5m 5 minutes, 5h 5 hours, 2d 2 days  => row created_time >=  now() - (minus time)
+      db-log: true # fcm send success/fail db log
+  db-scrape:
+    scheduled-fixed-rate: 5000 # ms  scheduled time
+    thread-pool-size: 2
 
 ---
 spring:
@@ -65,6 +84,10 @@ spring:
       path: /h2-console
 
 
+  mvc:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 
   datasource:
     driverClassName: org.h2.Driver
@@ -100,6 +123,9 @@ spring:
             readTimeout: 5000
             loggerLevel: basic
 
+fcm-cors-origins: >
+  http://localhost:3000,
+  http://127.0.0.1:3000
 
 
 fcm-apps:
@@ -127,6 +153,10 @@ spring:
         - dev
   pid.file: "./application.pid"
 
+  mvc:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
   data:
     redis:
       host: localhost
@@ -170,6 +200,11 @@ spring:
             connectTimeout: 5000
             readTimeout: 5000
             loggerLevel: basic
+
+fcm-cors-origins: >
+    http://localhost:3000,
+    http://127.0.0.1:3000
+
 fcm-apps:
   -
     name: ecobridge
@@ -195,6 +230,8 @@ spring:
       on-profile:
         - prod
   pid.file: "./application.pid"
+
+
 
   data:
     redis:
@@ -239,6 +276,11 @@ spring:
             connectTimeout: 5000
             readTimeout: 5000
             loggerLevel: basic
+
+fcm-cors-origins: >
+  http://localhost:3000,
+  http://127.0.0.1:3000
+
 fcm-apps:
   -
     name: ecobridge

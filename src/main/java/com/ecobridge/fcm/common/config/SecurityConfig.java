@@ -74,13 +74,13 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/*/auth/**").permitAll()
-                        .requestMatchers("/*/alerts").permitAll()  // Grafana Alert
-                        .requestMatchers("/*/fcm/**").permitAll()
+                        .requestMatchers("/api/*/auth/**").permitAll()
+                        .requestMatchers("/api/*/alerts").permitAll()  // Grafana Alert
+                        .requestMatchers("/api/*/fcm/**").permitAll()
                         .requestMatchers("/fcm/actuator/**").permitAll()
                         .requestMatchers("/h2-console").permitAll()
-                        .requestMatchers("/*/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/*/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/*/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement((sm) -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((eh) -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint))
@@ -88,7 +88,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> {
                     logout.deleteCookies(refreshCookieName)
-                          .logoutUrl("/api/v1/auth/logout")
+                          .logoutUrl("/api/*/auth/logout")
                           .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                     ;
                 })

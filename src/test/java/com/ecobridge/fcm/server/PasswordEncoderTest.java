@@ -1,3 +1,11 @@
+package com.ecobridge.fcm.server;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /*
  * Copyright 2023 jinyoonoh@gmail.com (postgresql.co.kr, ecobridge.com)
  *
@@ -13,25 +21,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ecobridge.fcm.server.dto;
+@Slf4j
+public class PasswordEncoderTest {
+    @Test
+    public void encodeTest() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        log.debug(encoder.encode("123456"));
+        boolean matches = encoder.matches("1234", "$2a$10$uBDDPY6/N0uuY/YfG7W4YONf0edIgLXdVBXRjqOdPlAFu7E48hoyq");
+        assertThat(matches).isTrue();
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class FcmApp implements Serializable {
-    private String name;
-    private String googleApplicationCredentials;
-    private int connectionTimeout = 3;
-    private int readTimeout = 5;
-    private boolean dbLog = false;
-    private boolean dbPush = false;
-    private String dbMinusTime = "5m";
+    }
 }

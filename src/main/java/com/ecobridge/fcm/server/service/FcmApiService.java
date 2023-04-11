@@ -17,7 +17,7 @@ package com.ecobridge.fcm.server.service;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.FileAppender;
-import com.ecobridge.fcm.server.config.FcmPropsConfig;
+import com.ecobridge.fcm.common.config.FcmPropsConfig;
 import com.ecobridge.fcm.server.entity.FcmLogEntity;
 import com.ecobridge.fcm.server.exception.InvalidRequestException;
 import com.ecobridge.fcm.server.repository.FcmLogEntityRepository;
@@ -26,7 +26,6 @@ import com.ecobridge.fcm.server.repository.FcmMsgEntityRepository;
 import com.ecobridge.fcm.server.repository.FcmMsgQueryRepository;
 import com.ecobridge.fcm.common.util.URLChecker;
 import com.ecobridge.fcm.server.dto.FailureToken;
-import com.ecobridge.fcm.server.dto.FcmApp;
 import com.ecobridge.fcm.server.dto.FcmBuilder;
 import com.ecobridge.fcm.server.dto.FcmMessage;
 import com.google.firebase.messaging.*;
@@ -135,8 +134,8 @@ public class FcmApiService {
     }
 
     private boolean isDbLog(String appName) {
-        FcmApp fcmApp = fcmPropsConfig.getFcmApps().stream().filter(vo -> vo.getName().equals(appName))
-                               .findFirst().orElseGet(null);
+        FcmPropsConfig.FcmApp fcmApp = fcmPropsConfig.getApps().stream().filter(vo -> vo.getName().equals(appName))
+                                                     .findFirst().orElseGet(null);
         if (fcmApp != null && fcmApp.isDbLog()) {
             return true;
         }

@@ -16,7 +16,10 @@
 package com.ecobridge.fcm.common.controller;
 
 import com.ecobridge.fcm.common.config.JwtTokenUtil;
-import com.ecobridge.fcm.common.dto.*;
+import com.ecobridge.fcm.common.dto.JwtTokenResponse;
+import com.ecobridge.fcm.common.dto.MessageResponse;
+import com.ecobridge.fcm.common.dto.SigninRequest;
+import com.ecobridge.fcm.common.dto.SignupRequest;
 import com.ecobridge.fcm.common.entity.UserRolesEntity;
 import com.ecobridge.fcm.common.entity.UsersEntity;
 import com.ecobridge.fcm.common.enums.RoleName;
@@ -26,16 +29,16 @@ import com.ecobridge.fcm.common.service.CustomUserDetailsService;
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -50,8 +53,11 @@ public class AuthController {
     public final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Auth";
+    }
     @PostMapping("/signup")
-
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
 
         if (usersEntityRepository.existsByUsername(signupRequest.getUsername())) {
@@ -70,8 +76,8 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest, HttpServletResponse response) {
-        authenticationManager.authenticate(
+    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest, HttpServletResponse response) {
+        Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         signinRequest.getUsername(),
                         signinRequest.getPassword()
@@ -79,22 +85,25 @@ public class AuthController {
         );
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(signinRequest.getUsername());
+
         String token = jwtTokenUtil.generateAccessToken(userDetails);
         String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        cookie.setAttribute("SameSite", "None");
+        // cookie.setSecure(false);
         response.addCookie(cookie);
         return ResponseEntity.ok(new JwtTokenResponse(token));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody JwtRefreshTokenRequest refreshTokenRequest) {
-        if (jwtTokenUtil.canRefresh(refreshTokenRequest.getRefreshToken())) {
-            String token = jwtTokenUtil.refreshToken(refreshTokenRequest.getRefreshToken());
+    public ResponseEntity<?> refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
+        if (jwtTokenUtil.canRefresh(refreshToken)) {
+            String token = jwtTokenUtil.refreshToken(refreshToken);
             return ResponseEntity.ok(new JwtTokenResponse(token));
         } else {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Refresh token is invalid or expired."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error: Refresh token is invalid or expired."));
         }
     }
 

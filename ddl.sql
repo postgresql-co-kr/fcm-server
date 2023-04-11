@@ -156,3 +156,6 @@ COMMENT ON COLUMN fcm_owner.user_roles.user_id IS '사용자 아이디';
 COMMENT ON COLUMN fcm_owner.user_roles.role_name IS 'Role 이름';
 COMMENT ON COLUMN  fcm_owner.user_roles.updated_at IS '수정일시';
 COMMENT ON COLUMN  fcm_owner.user_roles.created_at IS '가입일시';
+
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA fcm_owner TO fcm_app;

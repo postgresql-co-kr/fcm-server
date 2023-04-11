@@ -15,26 +15,24 @@
  */
 package com.ecobridge.fcm.common.config;
 
+import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 @Configuration
+@RequiredArgsConstructor
 public class JasyptConfig {
 
-    @Autowired
-    private Environment env;
+    private final FcmPropsConfig fcmPropsConfig;
 
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        String jasyptEnvName = env.getProperty("jasypt.encryptor.env.name", "JASYPT_ENCRYPTOR_PASSWORD");
-        String jasyptPassword = env.getProperty(jasyptEnvName);
+        String jasyptPassword = fcmPropsConfig.getSecretKey();
         if (jasyptPassword == null) {
-            throw new IllegalStateException(jasyptEnvName + " system environment variable not found");
+            throw new IllegalStateException("fcm secret" + " system environment variable not found");
         }
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();

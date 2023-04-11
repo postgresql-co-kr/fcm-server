@@ -15,10 +15,11 @@
  */
 package com.ecobridge.fcm.server.config;
 
-import com.ecobridge.fcm.server.dto.FcmApp;
+import com.ecobridge.fcm.common.config.FcmPropsConfig;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,20 +30,17 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class FirebaseConfig {
 
     private final FcmPropsConfig fcmPropsConfig;
-
-    public FirebaseConfig(FcmPropsConfig fcmPropsConfig) {
-        this.fcmPropsConfig = fcmPropsConfig;
-    }
 
     @PostConstruct
     public void init() {
         log.info("Fcm-server configuration init...");
 
-        List<FcmApp> fcmAppsList = fcmPropsConfig.getFcmApps();
-        for (FcmApp fcmApp: fcmAppsList) {
+        List<FcmPropsConfig.FcmApp> fcmAppsList = fcmPropsConfig.getApps();
+        for (FcmPropsConfig.FcmApp fcmApp: fcmAppsList) {
             try(FileInputStream serviceAccount = new FileInputStream(fcmApp.getGoogleApplicationCredentials())) {
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))

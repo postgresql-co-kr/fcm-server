@@ -22,6 +22,7 @@ import com.ecobridge.fcm.common.enums.RoleName;
 import com.ecobridge.fcm.common.repository.UserRolesEntityRepository;
 import com.ecobridge.fcm.common.repository.UsersEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,19 +41,22 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRolesEntityRepository userRolesEntityRepository;
 
 
+    @Cacheable(value = "users", key = "#username")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UsersEntity user = usersEntityRepository.findByUsername(username)
-                          .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                                                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         List<UserRolesEntity> roles = userRolesEntityRepository.findByUserId(user.getId())
                                                                .orElse(Collections.EMPTY_LIST);
 
         Set<RoleName> roleNames = roles.stream().map(role -> role.getRoleName())
-                .collect(Collectors.toSet());
+                                       .collect(Collectors.toSet());
 
-        return UserDto.builder().username(user.getUsername())
-                .password(user.getPassword())
-                .roles(roleNames).build();
+        return UserDto.builder()
+                      .id(user.getId())
+                      .username(user.getUsername())
+                      .password(user.getPassword())
+                      .roles(roleNames).build();
     }
 }
