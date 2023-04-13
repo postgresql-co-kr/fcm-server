@@ -81,7 +81,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/*/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement((sm) -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling((eh) -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                //.exceptionHandling((eh) -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> {
@@ -97,7 +97,9 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                           .requestMatchers(HttpMethod.OPTIONS, "/**");
+                           .requestMatchers(HttpMethod.OPTIONS, "/**")
+                .requestMatchers("/*.ico")
+                .requestMatchers("/error");
     }
 
 }

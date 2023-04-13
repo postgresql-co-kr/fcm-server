@@ -1,9 +1,11 @@
 package com.ecobridge.fcm.common.config;
 
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /*
  * Copyright 2023 jinyoonoh@gmail.com (postgresql.co.kr, ecobridge.com)
@@ -21,20 +23,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * limitations under the License.
  */
 @Configuration
-@RequiredArgsConstructor
-public class WebConfig implements WebMvcConfigurer {
+public class JacksonConfig {
 
-    private final FcmPropsConfig fcmPropsConfig;
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-
-        registry.addMapping("/**")
-                .allowedOrigins(fcmPropsConfig.getCorsOrigins())
-                .allowedMethods("*")
-                .allowCredentials(true)  // allow cookie session
-                .maxAge(60 * 60 * 24); // seconds  24hour
+    @Bean
+    public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+        return Jackson2ObjectMapperBuilder.json()
+                .modules(new JavaTimeModule())
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                ;
     }
-
-
 }

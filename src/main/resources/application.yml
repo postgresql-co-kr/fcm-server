@@ -98,9 +98,11 @@ fcm:
     http://127.0.0.1:3000
   cookie-https: false
   secret-key: ${FCM_SECRET_KEY}
+  fcm-aes-key: ${FCM_AES_KEY}
+  fcm-aes-iv: ${FCM_AES_IV}
   jwt:
-    expiration-time: 700000
-    refresh-expiration-time: 8888888888
+    expiration-time: 600  # seconds
+    refresh-expiration-time: 2592000  # 30 days
     refresh-cookie-name: fcm-refresh-token
   apps:
     -

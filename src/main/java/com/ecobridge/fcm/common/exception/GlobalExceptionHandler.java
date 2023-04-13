@@ -16,6 +16,7 @@
 package com.ecobridge.fcm.common.exception;
 
 import com.ecobridge.fcm.common.dto.ErrorResponse;
+import com.ecobridge.fcm.common.enums.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,9 +36,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception e, HttpServletRequest request) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", request.getRequestURI());
-        log.error("Internal server error:", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ErrorResponse.builder()
+                             .code(ResponseCode.INTERNAL_SERVER_ERROR_01.code())
+                             .message(ResponseCode.INTERNAL_SERVER_ERROR_01.getMessage())
+                             .path(request.getRequestURI())
+                             .build()
+        );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,15 +51,25 @@ public class GlobalExceptionHandler {
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
                                .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                                .collect(Collectors.joining(", "));
-        ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage, request.getRequestURI());
-        log.error("@valid exception:", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse.builder()
+                             .code(ResponseCode.BAD_REQUEST_01.code())
+                             .message(errorMessage)
+                             .path(request.getRequestURI())
+                             .build()
+        );
     }
 
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class, AuthenticationException.class})
     public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(Exception e, HttpServletRequest request) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Check usename or Email/password", request.getRequestURI());
         log.error("UsernameNotFoundException:", e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponse.builder()
+                             .code(ResponseCode.UNAUTHORIZED_01.code())
+                             .message(ResponseCode.UNAUTHORIZED_01.getMessage())
+                             .path(request.getRequestURI())
+                             .build()
+        );
     }
 }

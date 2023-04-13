@@ -32,6 +32,8 @@ public class FcmPropsConfig {
     private List<FcmApp> apps;
     private String[] corsOrigins;
     private String secretKey;
+    private String fcmAesKey;
+    private String fcmAesIv;
 
     private  Jwt jwt;
 
@@ -61,6 +63,7 @@ public class FcmPropsConfig {
         private long expirationTime;
         private long refreshExpirationTime;
         private String refreshCookieName;
+
 
     }
 

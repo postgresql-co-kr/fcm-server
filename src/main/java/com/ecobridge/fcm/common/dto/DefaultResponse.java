@@ -1,4 +1,3 @@
-package com.ecobridge.fcm.admin.controller;
 /*
  * Copyright 2023 jinyoonoh@gmail.com (postgresql.co.kr, ecobridge.com)
  *
@@ -14,22 +13,31 @@ package com.ecobridge.fcm.admin.controller;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.ecobridge.fcm.common.dto;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
-@RestController
-@RequestMapping("/api/v1/chart")
-@Timed(value = "fcm.admin.controller.timed")
-@RequiredArgsConstructor
-public class ChartController {
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello";
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
+
+
+@SuperBuilder
+@NoArgsConstructor
+@Data
+public class DefaultResponse  {
+    @Builder.Default
+    protected String code = "00000";
+    protected String message = "";
+
+    @Builder.Default
+    protected LocalDateTime timestamp = LocalDateTime.now();
+
+    public DefaultResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
     }
 }

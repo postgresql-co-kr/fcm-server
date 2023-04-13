@@ -57,11 +57,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 logger.warn("The token is expired and not valid anymore", e);
             }
-        } else {
-            if (requestHeader != null ) {
-                logger.debug("request url: "+ request.getRequestURL().toString());
-                logger.warn("Couldn't find bearer string, will ignore the header");
-            }
         }
 
         // SecurityContextHolder 의 Authentication 가 설정 되지 않으면 SecurityConfig 의 exceptionHandling end point 가 호출 됨

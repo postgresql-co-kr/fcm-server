@@ -18,7 +18,7 @@ package com.ecobridge.fcm.common.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.impl.Base64Codec;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +28,15 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenUtil {
 
     private final FcmPropsConfig fcmPropsConfig;
+    private final String secretKey;
+
+    public JwtTokenUtil(FcmPropsConfig fcmPropsConfig) {
+        this.fcmPropsConfig = fcmPropsConfig;
+        this.secretKey = Base64Codec.BASE64.encode(fcmPropsConfig.getSecretKey());
+    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -48,7 +53,7 @@ public class JwtTokenUtil {
 
     private Claims getAllClaimsFromToken(String token) {
         // decrypt token
-        return Jwts.parser().setSigningKey(fcmPropsConfig.getSecretKey()).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -56,14 +61,18 @@ public class JwtTokenUtil {
         return expiration.before(new Date());
     }
 
-    public String generateAccessToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername(), fcmPropsConfig.getJwt().getExpirationTime());
+    public String generateAccessToken(String username, Map<String, Object> claims) {
+        if (claims == null) {
+            claims = new HashMap<>();
+        }
+        return doGenerateToken(claims, username, fcmPropsConfig.getJwt().getExpirationTime());
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername(), fcmPropsConfig.getJwt().getRefreshExpirationTime());
+    public String generateRefreshToken(String username, Map<String, Object> claims) {
+        if (claims == null) {
+            claims = new HashMap<>();
+        }
+        return doGenerateToken(claims, username, fcmPropsConfig.getJwt().getRefreshExpirationTime());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject, Long expiration) {
@@ -75,7 +84,7 @@ public class JwtTokenUtil {
                    .setSubject(subject)
                    .setIssuedAt(createdDate)
                    .setExpiration(expirationDate)
-                   .signWith(SignatureAlgorithm.HS512, fcmPropsConfig.getSecretKey())
+                   .signWith(SignatureAlgorithm.HS512, secretKey)
                    .compact();
     }
 
@@ -89,10 +98,10 @@ public class JwtTokenUtil {
     public String refreshToken(String refreshToken) {
         final Claims claims = getAllClaimsFromToken(refreshToken);
         claims.setIssuedAt(new Date());
-        claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt().getExpirationTime() * 1000));
+        claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt().getRefreshExpirationTime() * 1000));
         return Jwts.builder()
                    .setClaims(claims)
-                   .signWith(SignatureAlgorithm.HS512, fcmPropsConfig.getSecretKey())
+                   .signWith(SignatureAlgorithm.HS512, secretKey)
                    .compact();
     }
 
