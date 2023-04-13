@@ -15,17 +15,24 @@
  */
 package com.ecobridge.fcm.common.dto;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-@Data
+
+
 @SuperBuilder
 @NoArgsConstructor
-public class MessageResponse extends DefaultResponse implements Serializable {
-    public MessageResponse(String message) {
-        super("00000", message);
-    }
+@Data
+public class SigninResponse extends DefaultResponse  implements Serializable {
+    @NonNull
+    private String username;
+    @NonNull
+    private boolean rememberMe;
+
+    @NonNull
+    private String accessToken;
+    
 }

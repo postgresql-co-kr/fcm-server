@@ -16,27 +16,39 @@
 package com.ecobridge.fcm.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
 
 @Data
+@Builder
+@NoArgsConstructor
 public class PrometheusQueryRangeResponse {
-    @JsonProperty("status")
-    private String status;
+    @JsonProperty("code")
+    @Builder.Default
+    private String code = "00000";
+
+    private String message;
 
     @JsonProperty("data")
     private Data data;
 
+    public PrometheusQueryRangeResponse(String code, String message, Data data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
 
     @lombok.Data
     public static class Data {
         @JsonProperty("resultType")
         private String resultType;
 
-        @JsonProperty("result")
+        @JsonProperty("results")
         private List<Result> results;
 
     }

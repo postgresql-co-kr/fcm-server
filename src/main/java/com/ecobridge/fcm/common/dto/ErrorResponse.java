@@ -16,32 +16,20 @@
 package com.ecobridge.fcm.common.dto;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
+
+@SuperBuilder
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class ErrorResponse {
-    @NotNull
-    private int status;
-    @NotBlank
-    private String message;
+public class ErrorResponse extends DefaultResponse implements Serializable {
     private String path;
-    @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now();
-
-    public ErrorResponse(int status, String message, String path) {
-        this.status = status;
-        this.message = message;
+    public ErrorResponse(String code, String message, String path) {
+        super(code, message);
         this.path = path;
-        this.timestamp = LocalDateTime.now();
     }
 }
