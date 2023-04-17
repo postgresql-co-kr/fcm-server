@@ -13,31 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ecobridge.fcm.common.dto;
+package com.ecobridge.fcm.common.entity;
 
-
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-
-@SuperBuilder
-@NoArgsConstructor
+/**
+ * @author
+ */
 @Data
-public class DefaultResponse  {
-    @Builder.Default
-    protected String code = "00000";
-    @Builder.Default
-    protected String message = "";
-    @Builder.Default
-    protected LocalDateTime timestamp = LocalDateTime.now();
-
-    public DefaultResponse(String code, String message) {
-        this.code = code;
-        this.message = message;
-        this.timestamp = LocalDateTime.now();
-    }
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "userTokens")
+@Table(name = "user_tokens")
+public class UserTokensEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private Long userId;
+    @Column(nullable = false)
+    private String token;
+    @Column(nullable = false)
+    private String userAgent;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

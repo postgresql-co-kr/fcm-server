@@ -19,17 +19,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.Base64Codec;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
-
+    public final static String REMEMBER_ME_KEY = "rememberMe";
     private final FcmPropsConfig fcmPropsConfig;
     private final String secretKey;
 
@@ -69,10 +69,18 @@ public class JwtTokenUtil {
     }
 
     public String generateRefreshToken(String username, Map<String, Object> claims) {
+        boolean isRememberMe = false;
         if (claims == null) {
             claims = new HashMap<>();
+        } else {
+            if (claims.containsKey(REMEMBER_ME_KEY)) {
+                isRememberMe = (boolean) claims.get(REMEMBER_ME_KEY);
+            }
         }
-        return doGenerateToken(claims, username, fcmPropsConfig.getJwt().getRefreshExpirationTime());
+        if (isRememberMe) {
+            return doGenerateToken(claims, username, fcmPropsConfig.getJwt().getRefreshExpirationTime());
+        }
+        return doGenerateToken(claims, username, fcmPropsConfig.getJwt().getExpirationTime());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject, Long expiration) {
@@ -80,6 +88,7 @@ public class JwtTokenUtil {
         final Date expirationDate = new Date(createdDate.getTime() + expiration * 1000);
 
         return Jwts.builder()
+                   .setId(UUID.randomUUID().toString())
                    .setClaims(claims)
                    .setSubject(subject)
                    .setIssuedAt(createdDate)
@@ -97,16 +106,33 @@ public class JwtTokenUtil {
 
     public String refreshToken(String refreshToken) {
         final Claims claims = getAllClaimsFromToken(refreshToken);
+        claims.setId(UUID.randomUUID().toString());
         claims.setIssuedAt(new Date());
-        claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt().getRefreshExpirationTime() * 1000));
+        if (isRememberMe(refreshToken)) {
+            claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt()
+                                                                                     .getRefreshExpirationTime() * 1000));
+        } else {
+            claims.setExpiration(new Date(System.currentTimeMillis() + fcmPropsConfig.getJwt()
+                                                                                     .getExpirationTime() * 1000));
+        }
+
         return Jwts.builder()
                    .setClaims(claims)
                    .signWith(SignatureAlgorithm.HS512, secretKey)
                    .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token, String username) {
+        final String tokenUsername = getUsernameFromToken(token);
+        return (tokenUsername.equals(username) && !isTokenExpired(token));
+    }
+
+    public boolean isRememberMe(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        if (claims.containsKey(REMEMBER_ME_KEY)) {
+            return (boolean) claims.get(REMEMBER_ME_KEY);
+        }
+
+        return false;
     }
 }

@@ -1,3 +1,5 @@
+package com.ecobridge.fcm.common.dto;
+
 /*
  * Copyright 2023 jinyoonoh@gmail.com (postgresql.co.kr, ecobridge.com)
  *
@@ -13,31 +15,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ecobridge.fcm.common.dto;
 
+import com.ecobridge.fcm.common.enums.RoleName;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.util.Set;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigninRequest implements Serializable {
+public class SigninDto {
+    // ------------------------------------
+    // Input
+    // ------------------------------------
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(min = 4, max = 20)
     private String username;
-
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
-
-    @NotNull
+    @NotBlank
+    @Size(max = 256)
+    private String userAgent;
+    @NotBlank
     private boolean rememberMe;
+    @NotBlank
+    @Size(max = 256)
+    private String oldRefreshToken;
+
+    // ------------------------------------
+    // Output
+    // ------------------------------------
+
+    private String refreshToken;
+
+    private String accessToken;
+
+    private Set<RoleName> roles;
 }

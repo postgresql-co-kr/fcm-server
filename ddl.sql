@@ -157,5 +157,25 @@ COMMENT ON COLUMN fcm_owner.user_roles.role_name IS 'Role 이름';
 COMMENT ON COLUMN  fcm_owner.user_roles.updated_at IS '수정일시';
 COMMENT ON COLUMN  fcm_owner.user_roles.created_at IS '가입일시';
 
+CREATE TABLE IF NOT EXISTS fcm_owner.user_tokens (
+  id SERIAL NOT NULL PRIMARY KEY,
+  user_id INT NOT NULL,
+  token VARCHAR(256) NOT NULL,
+  user_agent VARCHAR(256) NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX ON fcm_owner.user_tokens(user_id);
+CREATE INDEX ON fcm_owner.user_tokens(token);
+
+COMMENT ON TABLE fcm_owner.user_tokens IS '회원 refresh token';
+COMMENT ON COLUMN fcm_owner.user_tokens.id IS 'Role 아이디';
+COMMENT ON COLUMN fcm_owner.user_tokens.user_id IS '사용자 아이디';
+COMMENT ON COLUMN fcm_owner.user_tokens.token IS 'refresh 토큰';
+COMMENT ON COLUMN fcm_owner.user_tokens.user_agent IS 'user agent';
+COMMENT ON COLUMN  fcm_owner.user_tokens.updated_at IS '수정일시';
+COMMENT ON COLUMN  fcm_owner.user_tokens.created_at IS '가입일시';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA fcm_owner TO fcm_app;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA fcm_owner TO fcm_app;

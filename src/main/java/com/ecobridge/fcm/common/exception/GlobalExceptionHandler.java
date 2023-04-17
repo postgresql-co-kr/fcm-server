@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception e, HttpServletRequest request) {
-
+        log.error("handleAllExceptions:", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 ErrorResponse.builder()
                              .code(ResponseCode.INTERNAL_SERVER_ERROR_01.code())
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         String errorMessage = e.getBindingResult().getFieldErrors().stream()
                                .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                                .collect(Collectors.joining(", "));
-
+        log.error("handleMethodArgumentNotValidException:", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 ErrorResponse.builder()
                              .code(ResponseCode.BAD_REQUEST_01.code())

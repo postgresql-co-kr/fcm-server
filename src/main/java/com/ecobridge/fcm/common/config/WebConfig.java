@@ -32,8 +32,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(fcmPropsConfig.getCorsOrigins())
                 .allowedMethods("*")
+                .exposedHeaders("Set-Cookie")
                 .allowCredentials(true)  // allow cookie session
-                .maxAge(60 * 60 * 24); // seconds  24hour
+                .maxAge(60 * 60 * 1); // seconds  24hour
     }
 
 

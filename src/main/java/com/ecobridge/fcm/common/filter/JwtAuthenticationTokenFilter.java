@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -51,7 +52,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             jwtToken = requestHeader.substring(7);
             try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                if(StringUtils.hasLength(jwtToken) && jwtToken.indexOf(".") > 0) {
+                    username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                }
             } catch (IllegalArgumentException e) {
                 logger.error("An error occurred while getting username from token", e);
             } catch (ExpiredJwtException e) {
@@ -62,7 +65,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // SecurityContextHolder 의 Authentication 가 설정 되지 않으면 SecurityConfig 의 exceptionHandling end point 가 호출 됨
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+            if (jwtTokenUtil.validateToken(jwtToken, username)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

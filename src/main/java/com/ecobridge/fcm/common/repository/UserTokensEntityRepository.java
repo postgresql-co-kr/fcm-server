@@ -1,4 +1,3 @@
-package com.ecobridge.fcm.admin.controller;
 /*
  * Copyright 2023 jinyoonoh@gmail.com (postgresql.co.kr, ecobridge.com)
  *
@@ -14,24 +13,17 @@ package com.ecobridge.fcm.admin.controller;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.ecobridge.fcm.common.repository;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ecobridge.fcm.common.entity.UserTokensEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Slf4j
-@RestController
-@RequestMapping("/api/v1/user")
-@Timed(value = "fcm.user.controller.timed")
-@RequiredArgsConstructor
-public class UserController {
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello";
-    }
+import java.util.List;
+import java.util.Optional;
 
-
+@Repository
+public interface UserTokensEntityRepository extends JpaRepository<UserTokensEntity, Long> {
+    Optional<List<UserTokensEntity>> findByUserId(Long userId);
+    Optional<UserTokensEntity> findByToken(String token);
 }

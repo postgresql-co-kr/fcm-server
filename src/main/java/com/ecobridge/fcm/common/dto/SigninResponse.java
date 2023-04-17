@@ -15,12 +15,14 @@
  */
 package com.ecobridge.fcm.common.dto;
 
+import com.ecobridge.fcm.common.enums.RoleName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.Set;
 
 
 @SuperBuilder
@@ -34,5 +36,8 @@ public class SigninResponse extends DefaultResponse  implements Serializable {
 
     @NonNull
     private String accessToken;
-    
+
+    @NonNull
+    private Set<RoleName> roles;
+
 }

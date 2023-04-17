@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/alerts")
 @RequiredArgsConstructor
 @Timed(value = "fcm.auth.controller.timed")
 public class AlertsController {
-    @RequestMapping("/v1/alerts")
-    public ResponseEntity<?> alerts(HttpServletRequest request) throws IOException {
+    @RequestMapping("/sms")
+    public ResponseEntity<?> sms(HttpServletRequest request) throws IOException {
         log.debug("alerts: {}",request.getReader().lines().collect(Collectors.toList()));
         return ResponseEntity.ok("ok");
     }
