@@ -49,7 +49,13 @@ public class AuthController {
 
     @GetMapping("/hello")
     public String hello() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return "Hello Auth";
+
     }
 
     @PostMapping("/signin")
@@ -82,16 +88,17 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue(name = "#{fcmPropsConfig.jwt.refreshCookieName}", required = true) String refreshToken,
+    public ResponseEntity<?> logout(@CookieValue(name = "#{fcmPropsConfig.jwt.refreshCookieName}", required = false) String refreshToken,
                                     HttpServletResponse response) {
 
-        authService.logout(refreshToken);
-        // delete cookie
-        Cookie cookie = new Cookie(fcmPropsConfig.getJwt().getRefreshCookieName(), null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
+        if (refreshToken != null) {
+            authService.logout(refreshToken);
+            // delete cookie
+            Cookie cookie = new Cookie(fcmPropsConfig.getJwt().getRefreshCookieName(), null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
         return ResponseEntity.ok(new MessageResponse("Logout successfully!"));
     }
 

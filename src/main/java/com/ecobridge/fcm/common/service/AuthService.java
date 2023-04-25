@@ -34,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -139,10 +140,15 @@ public class AuthService {
 
     @Transactional
     public void logout(String refreshToken) {
+        if (!StringUtils.hasLength(refreshToken)) {
+            return;
+        }
         UserTokensEntity userToken =
                 userTokensEntityRepository.findByToken(refreshToken)
-                                          .orElseThrow(() -> new InvalidCookieException("The refresh token not exists!"));
-        userTokensEntityRepository.delete(userToken);
+                                          .orElseGet(null);
+        if (userToken != null) {
+            userTokensEntityRepository.delete(userToken);
+        }
         SecurityContextHolder.clearContext();
     }
 

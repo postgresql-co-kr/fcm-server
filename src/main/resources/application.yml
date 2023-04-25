@@ -12,6 +12,14 @@ spring:
         enabled: false
   jackson.default-property-inclusion: non_null
   devtools.livereload.enable: false
+  messages:
+    basename: i18n/message, i18n/exception, i18n/validate
+    encoding: UTF-8
+    cache-duration: 30
+    always-use-message-format: true
+    use-code-as-default-message: true
+    fallback-to-system-locale: true
+
 
 management:
   server:

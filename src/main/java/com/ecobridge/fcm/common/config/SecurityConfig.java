@@ -48,6 +48,7 @@ public class SecurityConfig {
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     private final CustomUserDetailsService customUserDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -74,7 +75,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/*/auth/**").permitAll()
                         .requestMatchers("/api/*/alerts").permitAll()  // Grafana Alert
                         .requestMatchers("/api/*/fcm/**").permitAll()
-                        .requestMatchers("/fcm/actuator/**").permitAll()
                         .requestMatchers("/h2-console").permitAll()
                         .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/*/user/**").hasAnyRole("USER", "ADMIN")
@@ -83,12 +83,7 @@ public class SecurityConfig {
                 .exceptionHandling((eh) -> eh.authenticationEntryPoint(jwtAuthenticationEntryPoint))  // status 403 => 401
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                //.logout((logout) -> {
-                //    logout.deleteCookies(fcmPropsConfig.getJwt().getRefreshCookieName())
-                //          .logoutUrl("/api/*/auth/logout")
-                //          .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                //    ;
-                //})
+
         ;
         return http.build();
     }
@@ -97,8 +92,9 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                            .requestMatchers(HttpMethod.OPTIONS, "/**")
-                .requestMatchers("/*.ico")
-                .requestMatchers("/error");
+                           .requestMatchers("/*.ico")
+                           .requestMatchers("/fcm/actuator/**")
+                           .requestMatchers("/error");
     }
 
 }

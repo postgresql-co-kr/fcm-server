@@ -30,8 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @GetMapping("/hello")
     public String hello() {
-        return "Hello";
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return "Hello user";
     }
-
-
 }
