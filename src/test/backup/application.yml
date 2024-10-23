@@ -1,0 +1,152 @@
+server:
+  port: 8080
+#  servlet:
+#    context-path: /mcs
+
+spring:
+  application:
+    name: oss-mcs
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB  # 최대 파일 크기 설정
+      max-request-size: 10MB  # 최대 요청 크기 설정
+
+  datasource:
+    master:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+    slave1:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+    slave2:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        default_schema: DEV_CHAT  # change
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+        show_sql: false
+        use_sql_comments: true
+  upload:
+    location: /uploads  # 파일 업로드 경로
+
+springdoc:
+  swagger-ui:
+    path=/swagger-ui:
+      html:
+
+#  config:
+#    import:
+#      - classpath:logging.yml
+#      - classpath:storage-db.yml
+#      - cloud.yml
+
+#ow:
+#  system:
+#    properties:
+#      orm: mybatis
+#      multi-datasource:
+#        enabled: false
+
+cors:
+  allowed-origins:
+    - http://localhost:3000
+    - https://localhost:5173
+    - https://localhost:5174
+    - https://local.denall.com:5173
+    - https://denall.com
+    - https://stage.denall.com
+
+schema:
+  den-all: DEN_TEST
+
+service:
+  legacy-members:
+    scheme: https
+    host: stage-member.denall.com
+    path:
+      key: /idp-auth/oauth/token_key
+      login: /idp/api/auth/sso-token
+      logout: /idp/sso-logout
+
+
+
+---
+spring.config.activate.on-profile: local
+
+
+
+
+
+
+
+---
+spring.config.activate.on-profile: dev
+
+
+---
+spring.config.activate.on-profile: stage
+
+
+---
+spring.config.activate.on-profile: prod
+spring:
+  datasource:
+    master:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+    slave1:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+    slave2:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://223.130.150.174:3306/DEV_CHAT?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: ghwns
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        default_schema: DEV_CHAT  # change
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+        show_sql: false
+        use_sql_comments: true
+
+  upload:
+    location: /uploads  # 파일 업로드 경로
+
+service:
+  legacy-members:
+    scheme: https
+    host: member.denall.com
+    path:
+      key: /idp-auth/oauth/token_key
+      login: /idp/api/auth/sso-token
+      logout: /idp/sso-logout
+schema:
+  den-all: DEN
